@@ -10,7 +10,7 @@ from .db.init import create_tables, reset_tables
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     await create_tables()
-    # await reset_tables()
+    #await reset_tables()
     yield
 
 

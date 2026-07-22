@@ -26,4 +26,4 @@ class Deck(Base):
     )
 
     user: Mapped["User"] = relationship(back_populates="decks")
-    cards: Mapped[list["Card"]] = relationship(back_populates="decks")
+    cards: Mapped[list["Card"]] = relationship(back_populates="deck", passive_deletes=True)

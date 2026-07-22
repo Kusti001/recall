@@ -17,3 +17,8 @@ class CardRead(BaseModel):
     back: str
 
     model_config = {"from_attributes": True}
+
+class CardUpdate(BaseModel):
+    front: str | None = None
+    back: str | None = None
+    deck_id: int | None = None
