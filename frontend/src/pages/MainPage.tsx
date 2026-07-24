@@ -1,8 +1,13 @@
+import { Hero } from "@/components/MainPage/Hero"
+import { Steps } from "@/components/MainPage/Steps"
+
 export function MainPage() {
   return (
-    <div className="flex flex-col items-center justify-center gap-2 py-24 text-foreground">
-      <h1 className="text-3xl font-bold">FastAPI Template</h1>
-      <p className="text-sm text-muted-foreground">hello</p>
-    </div>
+    <main className="min-h-screen">
+      <div className="mx-auto max-w-7xl px-6">
+        <Hero />
+        <Steps />
+      </div>
+    </main>
   )
 }
