@@ -7,7 +7,12 @@ export const apiClient = axios.create({
 apiClient.interceptors.request.use((config) => {
   const token = localStorage.getItem("token")
   if (token) {
-    config.headers.Authorization = `Bearer ${token}`
+    // send as Bearer token
+    // axios types: headers may be undefined, ensure object exists
+    config.headers = {
+      ...(config.headers || {}),
+      Authorization: `Bearer ${token}`,
+    }
   }
   return config
 })
@@ -34,6 +39,9 @@ export interface Deck {
   id: number
   user_id: string
   title: string
+  total?: number
+  mastered?: number
+  due?: number
   created_at?: string
   updated_at?: string
 }
@@ -62,6 +70,8 @@ export interface Card {
   deck_id: number | null
   front: string
   back: string
+  created_at?: string
+  updated_at?: string
 }
 
 export interface DecksResponse {

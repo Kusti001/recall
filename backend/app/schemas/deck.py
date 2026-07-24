@@ -11,3 +11,10 @@ class DeckRead(BaseModel):
     title: str
 
     model_config = {"from_attributes": True}
+
+class DeckStats(BaseModel):
+    id: int
+    title: str
+    total: int
+    mastered: int
+    due: int

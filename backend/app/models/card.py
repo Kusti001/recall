@@ -8,7 +8,7 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from app.db.base import Base
 
 if TYPE_CHECKING:
-    from app.models import Deck, User
+    from app.models import Deck, User, Review
 
 
 class Card(Base):
@@ -36,4 +36,5 @@ class Card(Base):
     reviews_count: Mapped[int] = mapped_column(default=0)
 
     user: Mapped["User"] = relationship(back_populates="cards")
-    deck: Mapped[list["Deck"]] = relationship(back_populates="cards")
+    deck: Mapped["Deck"] = relationship(back_populates="cards")
+    reviews: Mapped[list["Review"]] = relationship(back_populates="card")

@@ -9,7 +9,7 @@ from sqlalchemy.orm import Mapped, relationship
 from app.db.base import Base
 
 if TYPE_CHECKING:
-    from app.models import Card, Deck
+    from app.models import Card, Deck, Review
 
 
 class OAuthAccount(SQLAlchemyBaseOAuthAccountTableUUID, Base):
@@ -22,3 +22,4 @@ class User(SQLAlchemyBaseUserTableUUID, Base):
     )
     cards: Mapped[list["Card"]] = relationship(back_populates="user")
     decks: Mapped[list["Deck"]] = relationship(back_populates="user")
+    reviews: Mapped[list["Review"]] = relationship(back_populates="user")

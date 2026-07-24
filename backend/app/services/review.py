@@ -4,13 +4,14 @@ from datetime import timedelta
 from sqlalchemy import func
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.repositories import CardRepository
+from app.repositories import CardRepository, ReviewRepository
 
 
 class ReviewService:
     def __init__(self, session: AsyncSession):
         self.session = session
         self.cards = CardRepository(session)
+        self.reviews = ReviewRepository(session)
 
     async def get_due_cards(self, user_id: uuid.UUID, deck_id: int|None , limit: int):
         cards = await self.cards.get_due_cards(
@@ -45,5 +46,5 @@ class ReviewService:
             1.3
         )
         card.next_review = func.now() + timedelta(days=card.interval)
-
+        await self.reviews.create(user_id=user_id,card_id=card_id, rating=rating)
         return card
