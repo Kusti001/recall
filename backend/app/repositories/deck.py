@@ -25,7 +25,7 @@ class DeckRepository:
             select(
                 Deck.id,
                 Deck.title,
-                func.count(Card.id).label("total"),
+                func.count(Card.id).label("total_cards"),
                 func.count(case((Card.interval >= 21, 1))).label("mastered"),
                 func.count(case((Card.next_review <= func.now(), 1))).label("due"),
             )
@@ -34,10 +34,15 @@ class DeckRepository:
             .group_by(Deck.id)
         )
         result = await self.session.execute(stmt)
-        return [
+        decks = [
             DeckStats.model_validate(row._mapping)
             for row in result
         ]
+        return {
+            "decks": decks,
+            "total_due": sum(deck.due for deck in decks),
+            "total_decks": len(decks)
+        }
 
     async def delete(self, deck: Deck):
         await self.session.delete(deck)

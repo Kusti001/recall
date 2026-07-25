@@ -28,10 +28,7 @@ async def get_decks(
 ):
     service = DeckService(session)
     decks = await service.get_decks(user_id=user.id)
-    return {
-        "decks": decks,
-        "total": len(decks)
-    }
+    return decks
 
 
 @router.post("/", response_model=DeckRead)

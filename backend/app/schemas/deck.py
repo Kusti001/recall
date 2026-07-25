@@ -15,6 +15,6 @@ class DeckRead(BaseModel):
 class DeckStats(BaseModel):
     id: int
     title: str
-    total: int
+    total_cards: int
     mastered: int
     due: int

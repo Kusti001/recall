@@ -74,11 +74,6 @@ export interface Card {
   updated_at?: string
 }
 
-export interface DecksResponse {
-  decks: Deck[]
-  total: number
-}
-
 // --- Auth API ---
 export async function loginWithEmail(username: string, password: string) {
   const params = new URLSearchParams()
@@ -129,6 +124,24 @@ export async function getCurrentUser(): Promise<User> {
 }
 
 // --- Decks API ---
+export interface DeckStats {
+  id: number;
+  title: string;
+  total_cards: number;
+  mastered: number;
+  due: number;
+}
+
+export interface DecksResponse {
+  decks: DeckStats[]
+  total_decks: number
+  total_due: number
+}
+
+export interface DeckCreate {
+  title: string;
+}
+
 export async function getDecks() {
   const res = await apiClient.get<DecksResponse>("/api/v1/decks/")
   return res.data
@@ -140,7 +153,7 @@ export async function getDeck(deckId: number) {
 }
 
 export async function createDeck(title: string) {
-  const res = await apiClient.post<Deck>("/api/v1/decks/", { title })
+  const res = await apiClient.post<DeckCreate>("/api/v1/decks/", { title })
   return res.data
 }
 
