@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button"
 import { DeckCard } from "@/components/DecksPage/DeckCard"
 import { useEffect, useState } from "react"
 import { getDecks, createDeck } from "@/shared/api/api"
-import type { DecksResponse } from "@/shared/api/api";
+import type { DecksResponse } from "@/shared/api/api"
 import {
   Dialog,
   DialogContent,
@@ -13,25 +13,23 @@ import {
 } from "@/components/ui/dialog"
 
 export function DecksPage() {
-
   const [data, setData] = useState<DecksResponse | null>(null)
 
   const [open, setOpen] = useState(false)
   const [title, setTitle] = useState("")
 
-    useEffect(() => {
-      async function loadDecks() {
-        const response = await getDecks()
-        setData(response)
-      }
-
-      loadDecks()
-    }, [])
-
-    if (!data) {
-      return <div>Loading...</div>
+  useEffect(() => {
+    async function loadDecks() {
+      const response = await getDecks()
+      setData(response)
     }
 
+    loadDecks()
+  }, [])
+
+  if (!data) {
+    return <div>Loading...</div>
+  }
 
   return (
     <main className="mx-auto max-w-7xl px-8 py-12">
@@ -40,7 +38,8 @@ export function DecksPage() {
           <h1 className="font-serif text-4xl">Колоды</h1>
 
           <p className="mt-2 text-muted-foreground">
-            {data.total_decks} колод · {data.total_due} карточек к повторению сегодня
+            {data.total_decks} колод · {data.total_due} карточек к повторению
+            сегодня
           </p>
         </div>
 
@@ -56,8 +55,8 @@ export function DecksPage() {
       { */}
       <section className="mt-6 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
         {data.decks.map((deck) => (
-                <DeckCard key={deck.id} deck={deck} />
-                ))}
+          <DeckCard key={deck.id} deck={deck} />
+        ))}
 
         <Button
           variant="outline"
@@ -67,20 +66,17 @@ export function DecksPage() {
           <span className="flex h-10 w-10 items-center justify-center rounded-full border text-xl">
             +
           </span>
-
           Создать колоду
         </Button>
       </section>
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>
-              Новая колода
-            </DialogTitle>
+            <DialogTitle>Новая колода</DialogTitle>
           </DialogHeader>
 
           <input
-            className="border rounded-md px-3 py-2"
+            className="rounded-md border px-3 py-2"
             placeholder="Название колоды"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
