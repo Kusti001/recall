@@ -53,7 +53,14 @@ export function DecksPage() {
         <Button variant="outline">Есть к повторению</Button>
       </div>
       { */}
-      <section className="mt-6 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+      <section
+        className="
+          mt-6 grid gap-4
+          md:grid-cols-2
+          xl:grid-cols-3
+          auto-rows-fr
+        "
+      >
         {data.decks.map((deck) => (
           <DeckCard key={deck.id} deck={deck} />
         ))}
@@ -61,7 +68,7 @@ export function DecksPage() {
         <Button
           variant="outline"
           onClick={() => setOpen(true)}
-          className="flex h-full min-h-64 flex-col gap-3 border-dashed"
+          className="flex h-full min-h-48 flex-col gap-3 border-dashed"
         >
           <span className="flex h-10 w-10 items-center justify-center rounded-full border text-xl">
             +
