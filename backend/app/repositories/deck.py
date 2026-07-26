@@ -4,8 +4,10 @@ from sqlalchemy import case, select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 from sqlalchemy.sql.expression import func
+
 from app.models import Card, Deck
 from app.schemas import DeckStats
+
 
 class DeckRepository:
     def __init__(self, session: AsyncSession):
@@ -47,8 +49,34 @@ class DeckRepository:
     async def delete(self, deck: Deck):
         await self.session.delete(deck)
 
-    async def get_by_id_with_card(self, deck_id: int) -> Deck | None:
-        result = await self.session.execute(
-            select(Deck).where(Deck.id == deck_id).options(selectinload(Deck.cards))
+    async def get_by_id_with_stats(self, deck_id: int):
+        stmt = (
+            select(
+                Deck.id,
+                Deck.title,
+                func.count(Card.id).label("total_cards"),
+                func.count(
+                    case((Card.interval >= 21, 1))
+                ).label("mastered_cards"),
+                func.count(
+                    case((Card.next_review <= func.now(), 1))
+                ).label("due_cards"),
+            )
+            .join(Card, Card.deck_id == Deck.id, isouter=True)
+            .where(Deck.id == deck_id)
+            .group_by(Deck.id)
         )
-        return result.scalars().first()
+
+        result = await self.session.execute(stmt)
+
+        return result.mappings().first()
+
+    async def get_cards_by_deck(self, deck_id: int):
+        stmt = (
+            select(Card)
+            .where(Card.deck_id == deck_id)
+        )
+
+        result = await self.session.execute(stmt)
+
+        return result.scalars().all()

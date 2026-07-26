@@ -3,7 +3,7 @@ import uuid
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.repositories import DeckRepository
-from app.schemas import DeckCreate
+from app.schemas import DeckCreate, CardListItem
 
 
 class DeckService:
@@ -16,9 +16,11 @@ class DeckService:
         return card
 
     async def get_deck(self, user_id: uuid.UUID, deck_id: int):
-        deck = await self.decks.get_by_id_with_card(deck_id)
+        deck = await self.decks.get_by_id(deck_id)
         if not deck or deck.user_id != user_id:
             raise ValueError("Deck not found or access denied")
+
+        deck = await self.decks.get_by_id_with_stats(deck_id)
         return deck
 
     async def get_decks(self, user_id: uuid.UUID):
@@ -38,3 +40,17 @@ class DeckService:
         deck.title = data.title
         await self.session.flush()
         return deck
+
+    async def get_cards_by_deck(self, user_id: uuid.UUID, deck_id: int):
+        deck = await self.decks.get_by_id(deck_id)
+        if not deck or deck.user_id != user_id:
+            raise ValueError("Deck not found or access denied")
+
+        cards = await self.decks.get_cards_by_deck(deck_id)
+        return {
+                "cards": [
+                    CardListItem.from_card(card)
+                    for card in cards
+                ],
+                "total": len(cards)
+            }

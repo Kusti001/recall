@@ -18,8 +18,11 @@ async def get_deck(
     session: AsyncSession = Depends(get_async_session),
 ):
     service = DeckService(session)
-    deck = await service.get_deck(user_id=user.id, deck_id=deck_id)
-    return deck
+    try:
+        deck = await service.get_deck(user_id=user.id, deck_id=deck_id)
+        return deck
+    except ValueError as e:
+        raise HTTPException(status_code=404, detail=str(e))
 
 @router.get("/")
 async def get_decks(
@@ -70,4 +73,17 @@ async def update_deck(
         return DeckRead.model_validate(deck)
     except ValueError as e:
         await session.rollback()
+        raise HTTPException(status_code=404, detail=str(e))
+
+@router.get("/{deck_id}/cards")
+async def get_cards_by_deck(
+    deck_id: int,
+    user: User = Depends(get_current_user),
+    session: AsyncSession = Depends(get_async_session),
+):
+    service = DeckService(session)
+    try:
+        data = await service.get_cards_by_deck(user_id=user.id, deck_id=deck_id)
+        return data
+    except ValueError as e:
         raise HTTPException(status_code=404, detail=str(e))
