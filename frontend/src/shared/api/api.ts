@@ -25,7 +25,9 @@ export interface OAuthProviderConfig {
   label: string
 }
 
-export const oauthProviders: OAuthProviderConfig[] = [{ id: "google", label: "Google" }]
+export const oauthProviders: OAuthProviderConfig[] = [
+  { id: "google", label: "Google" },
+]
 
 export interface User {
   id: string
@@ -35,54 +37,19 @@ export interface User {
   is_verified?: boolean
 }
 
-export interface Deck {
-  id: number
-  user_id: string
-  title: string
-  total?: number
-  mastered?: number
-  due?: number
-  created_at?: string
-  updated_at?: string
-}
-
-export interface DeckCard {
-  id: number
-  user_id: string
-  deck_id: number | null
-  front: string
-  back: string
-  created_at?: string
-  updated_at?: string
-  next_review?: string
-  ease_factor?: number
-  interval?: number
-  reviews_count?: number
-}
-
-export interface DeckDetail extends Deck {
-  cards: DeckCard[]
-}
-
-export interface Card {
-  id: number
-  user_id: string
-  deck_id: number | null
-  front: string
-  back: string
-  created_at?: string
-  updated_at?: string
-}
-
 // --- Auth API ---
 export async function loginWithEmail(username: string, password: string) {
   const params = new URLSearchParams()
   params.append("username", username)
   params.append("password", password)
 
-  const res = await apiClient.post<{ access_token: string }>("/api/v1/auth/jwt/login", params, {
-    headers: { "Content-Type": "application/x-www-form-urlencoded" },
-  })
+  const res = await apiClient.post<{ access_token: string }>(
+    "/api/v1/auth/jwt/login",
+    params,
+    {
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    }
+  )
   return res.data
 }
 
@@ -103,18 +70,23 @@ export async function logout() {
 }
 
 export async function getOAuthUrl(provider: OAuthProvider): Promise<string> {
-  const res = await apiClient.get<{ authorization_url: string }>(`/api/v1/auth/${provider}/authorize`)
+  const res = await apiClient.get<{ authorization_url: string }>(
+    `/api/v1/auth/${provider}/authorize`
+  )
   return res.data.authorization_url
 }
 
 export async function exchangeOAuthCode(
   provider: OAuthProvider,
   code: string,
-  state: string,
+  state: string
 ): Promise<string> {
-  const res = await apiClient.get<{ access_token: string }>(`/api/v1/auth/${provider}/callback`, {
-    params: { code, state },
-  })
+  const res = await apiClient.get<{ access_token: string }>(
+    `/api/v1/auth/${provider}/callback`,
+    {
+      params: { code, state },
+    }
+  )
   return res.data.access_token
 }
 
@@ -125,11 +97,11 @@ export async function getCurrentUser(): Promise<User> {
 
 // --- Decks API ---
 export interface DeckStats {
-  id: number;
-  title: string;
-  total_cards: number;
-  mastered: number;
-  due: number;
+  id: number
+  title: string
+  total_cards: number
+  mastered: number
+  due: number
 }
 
 export interface DecksResponse {
@@ -139,7 +111,58 @@ export interface DecksResponse {
 }
 
 export interface DeckCreate {
-  title: string;
+  title: string
+}
+
+export interface DeckDetail {
+  id: number
+  title: string
+  total_cards: number
+  mastered_cards: number
+  due_cards: number
+}
+
+export interface CardListItem {
+  id: number
+  front: string
+  back: string
+  interval: number
+  status: string
+  reviews: number
+}
+
+export interface DeckCardsResponse {
+  cards: CardListItem[]
+  total: number
+}
+
+export interface CardDetail {
+  id: number
+  front: string
+  back: string
+  next_review: string
+  interval: number
+  ease_factor: number
+  reviews_count: number
+}
+
+export async function updateCard(card_id:number, front: string, back: string) {
+  const res = await apiClient.patch<CardDetail>(`/api/v1/cards/${card_id}`, {
+    front,
+    back,
+  })
+
+  return res.data
+}
+
+export async function createCard(front: string, back: string, deck_id: number) {
+  const res = await apiClient.post<CardDetail>("/api/v1/cards/", {
+    front,
+    back,
+    deck_id,
+  })
+
+  return res.data
 }
 
 export async function getDecks() {
@@ -147,8 +170,20 @@ export async function getDecks() {
   return res.data
 }
 
-export async function getDeck(deckId: number) {
-  const res = await apiClient.get<DeckDetail>(`/api/v1/decks/${deckId}`)
+export async function getDeckDetail(deck_id: number) {
+  const res = await apiClient.get<DeckDetail>(`/api/v1/decks/${deck_id}`)
+  return res.data
+}
+
+export async function getDeckCards(deck_id: number) {
+  const res = await apiClient.get<DeckCardsResponse>(
+    `/api/v1/decks/${deck_id}/cards`
+  )
+  return res.data
+}
+
+export async function getCardDetail(card_id: number) {
+  const res = await apiClient.get<CardDetail>(`/api/v1/cards/${card_id}`)
   return res.data
 }
 
@@ -157,26 +192,22 @@ export async function createDeck(title: string) {
   return res.data
 }
 
-export async function updateDeck(deckId: number, title: string) {
+
+/*export async function updateDeck(deckId: number, title: string) {
   const res = await apiClient.patch<Deck>(`/api/v1/decks/${deckId}`, { title })
   return res.data
-}
+} */
 
-export async function deleteDeck(deckId: number) {
-  const res = await apiClient.delete(`/api/v1/decks/${deckId}`)
+export async function deleteDeck(deck_id: number) {
+  const res = await apiClient.delete(`/api/v1/decks/${deck_id}`)
   return res.data
 }
 
-// --- Cards API ---
-export async function createCard(deckId: number, front: string, back: string) {
-  const res = await apiClient.post<Card>("/api/v1/cards/", {
-    deck_id: deckId,
-    front,
-    back,
-  })
+export async function deleteCard(card_id: number) {
+  const res = await apiClient.delete(`/api/v1/cards/${card_id}`)
   return res.data
 }
-
+/*
 export async function getCard(cardId: number) {
   const res = await apiClient.get<Card>(`/api/v1/cards/${cardId}`)
   return res.data
@@ -195,10 +226,6 @@ export async function deleteCard(cardId: number) {
   return res.data
 }
 
-export interface DueCardsResponse {
-  cards: Card[]
-  total: number
-}
 
 // --- Review API ---
 export async function getDueCards(deckId?: number, limit = 10) {
@@ -216,3 +243,4 @@ export async function reviewCard(cardId: number, rating: number) {
   const res = await apiClient.post(`/api/v1/cards/${cardId}/review`, { rating })
   return res.data
 }
+*/
