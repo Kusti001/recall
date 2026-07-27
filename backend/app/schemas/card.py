@@ -43,5 +43,12 @@ class CardListItem(BaseModel):
             back=card.back,
             interval=card.interval,
             reviews=card.reviews_count,
-            status="due" if card.next_review <= datetime.now() else "mastered"
+            #TODO: add MORE STATUSES: due, mastered, new, learning, review
+            status="due" if card.next_review <= datetime.now() else ( "mastered" if card.interval >= 21 else "learning" )
         )
+
+class CardReviewList(BaseModel):
+    id: int
+    front: str
+    back: str
+    model_config = {"from_attributes": True}

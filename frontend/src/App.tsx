@@ -12,10 +12,14 @@ import { HowThisWorksPage } from "./pages/HowThisWorksPage"
 
 function Layout() {
   return (
-    <>
-      <Header />
-      <Outlet />
-    </>
+    <div className="flex h-screen flex-col overflow-hidden">
+      <div className="shrink-0">
+        <Header />
+      </div>
+      <div className="min-h-0 flex-1 overflow-y-auto">
+        <Outlet />
+      </div>
+    </div>
   )
 }
 
@@ -28,9 +32,10 @@ const router = createBrowserRouter([
       { path: "/login", element: <LoginPage /> },
       { path: "/me", element: <MePage /> },
       { path: "/decks", element: <DecksPage /> },
-      { path: "/decks/:deckId", element: <DeckDetailPage /> },
-      { path: "/review", element: <ReviewPage /> },
-      { path: "/auth/:provider/callback", element: <AuthCallbackPage /> }
+      { path: "/decks/:id", element: <DeckDetailPage /> },
+      { path: "/review/:id", element: <ReviewPage /> },
+      { path: "/review", element: <DecksPage /> },
+      { path: "/auth/:provider/callback", element: <AuthCallbackPage /> },
     ],
   },
 ])

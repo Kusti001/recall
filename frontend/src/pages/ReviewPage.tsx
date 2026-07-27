@@ -1,99 +1,132 @@
 import { useEffect, useState } from "react"
-import { getDueCards, reviewCard, type Card } from "@/shared/api/api"
-import { Button } from "@/components/ui/button"
+import { useParams } from "react-router-dom"
+import { GradeBar } from "@/components/ReviewPage/GradeBar"
+import { ReviewCard as ReviewCardComponent } from "@/components/ReviewPage/ReviewCard"
+import { getReviewCards, reviewCard } from "@/shared/api/api"
+import type { ReviewCard } from "@/shared/api/api"
 
 export function ReviewPage() {
-  const [cards, setCards] = useState<Card[]>([])
-  const [currentIndex, setCurrentIndex] = useState(0)
+  const { id } = useParams()
+  const [cards, setCards] = useState<ReviewCard[]>([])
+  const [current, setCurrent] = useState(0)
   const [showAnswer, setShowAnswer] = useState(false)
   const [loading, setLoading] = useState(true)
+  const [pressedGrade, setPressedGrade] = useState<number | null>(null)
 
   useEffect(() => {
-    const loadCards = async () => {
+    if (!id) return
+
+    async function loadReviewCards() {
       try {
-        const data = await getDueCards(); // Получаем { cards: [...], total: N }
-        setCards(data.cards);
-      } catch (err) {
-        console.error(err);
+        setLoading(true)
+        const response = await getReviewCards(Number(id), 20)
+        setCards(response.cards)
+        setCurrent(0)
+        setShowAnswer(false)
+      } catch (error) {
+        console.error("Failed to load review cards:", error)
       } finally {
-        setLoading(false);
+        setLoading(false)
       }
-    };
-
-    loadCards();
-  }, []);
-
-  const handleReview = async (rating: number) => {
-    const currentCard = cards[currentIndex]
-    if (!currentCard) return
-
-    try {
-      await reviewCard(currentCard.id, rating)
-      setShowAnswer(false)
-      setCurrentIndex((prev) => prev + 1)
-    } catch (err) {
-      console.error(err)
     }
+
+    loadReviewCards()
+  }, [id])
+
+  const card = cards[current]
+
+  function handleFlip() {
+    setShowAnswer((prev) => !prev)
   }
+
+  async function handleGrade(grade: number) {
+    if (!card) return
+    await reviewCard(card.id, grade)
+    setShowAnswer(false)
+    setCurrent((prev) => prev + 1)
+  }
+
+  function triggerGrade(grade: number) {
+    setPressedGrade(grade)
+    window.setTimeout(() => {
+      setPressedGrade(null)
+      handleGrade(grade)
+    }, 150)
+  }
+
+  useEffect(() => {
+    function handleKeyDown(event: KeyboardEvent) {
+      if (event.code === "Space") {
+        event.preventDefault()
+        handleFlip()
+        return
+      }
+
+      if (!showAnswer) return
+
+      const key = Number(event.key)
+      if (Number.isInteger(key) && key >= 0 && key <= 5) {
+        event.preventDefault()
+        triggerGrade(key)
+      }
+    }
+
+    window.addEventListener("keydown", handleKeyDown)
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [showAnswer, current, cards])
 
   if (loading) {
-    return <div className="p-8 text-center">Загрузка карточек для повторения...</div>
+    return (
+      <main className="flex h-full items-center justify-center px-8">
+        <p className="text-sm text-muted-foreground">Загрузка...</p>
+      </main>
+    )
   }
 
-  const currentCard = cards[currentIndex]
-
-  if (!currentCard || currentIndex >= cards.length) {
+  if (cards.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center p-12 text-center space-y-3">
-        <h2 className="text-xl font-bold">Отличная работа! 🎉</h2>
-        <p className="text-sm text-muted-foreground">На сегодня нет доступных карточек для повторения.</p>
-      </div>
+      <main className="flex h-full items-center justify-center px-8">
+        <p className="text-sm text-muted-foreground">
+          Сегодня повторять нечего 🎉
+        </p>
+      </main>
+    )
+  }
+
+  if (current >= cards.length) {
+    return (
+      <main className="flex h-full items-center justify-center px-8">
+        <p className="text-sm text-muted-foreground">Сессия завершена 🎉</p>
+      </main>
     )
   }
 
   return (
-    <div className="mx-auto max-w-lg p-6 space-y-6">
-      <div className="flex justify-between items-center text-sm text-muted-foreground">
-        <span>Повторение карточек</span>
-        <span>Осталось: {cards.length - currentIndex}</span>
+    <main className="flex h-full flex-col px-8 py-12">
+      <div className="mx-auto flex w-full max-w-3xl justify-between text-sm text-muted-foreground">
+        <span>
+          {current + 1} / {cards.length}
+        </span>
       </div>
 
-      <div className="border rounded-xl p-8 bg-background shadow-sm text-center space-y-6 min-h-[220px] flex flex-col justify-center items-center">
-        <p className="text-lg font-medium">{currentCard.front}</p>
+      <div className="flex flex-1 items-center justify-center">
+        <div className="w-full max-w-3xl">
+          <ReviewCardComponent
+            card={card}
+            revealed={showAnswer}
+            onFlip={handleFlip}
+          />
+        </div>
+      </div>
 
+      <div className="mx-auto w-full max-w-3xl">
         {showAnswer && (
-          <div className="w-full border-t pt-4 text-primary font-semibold">
-            {currentCard.back}
-          </div>
+          <GradeBar onGrade={triggerGrade} activeGrade={pressedGrade} />
         )}
       </div>
-
-      {!showAnswer ? (
-        <Button onClick={() => setShowAnswer(true)} className="w-full py-3">
-          Показать ответ
-        </Button>
-      ) : (
-        <div className="grid grid-cols-3 gap-2 sm:grid-cols-6">
-          <Button variant="outline" className="border-red-500/50 hover:bg-red-500/10" onClick={() => handleReview(0)}>
-            0 · Провал
-          </Button>
-          <Button variant="outline" className="border-orange-500/50 hover:bg-orange-500/10" onClick={() => handleReview(1)}>
-            1 · Плохо
-          </Button>
-          <Button variant="outline" className="border-amber-500/50 hover:bg-amber-500/10" onClick={() => handleReview(2)}>
-            2 · Тяжело
-          </Button>
-          <Button variant="outline" className="border-yellow-500/50 hover:bg-yellow-500/10" onClick={() => handleReview(3)}>
-            3 · Норм
-          </Button>
-          <Button variant="outline" className="border-blue-500/50 hover:bg-blue-500/10" onClick={() => handleReview(4)}>
-            4 · Хорошо
-          </Button>
-          <Button variant="outline" className="border-emerald-500/50 hover:bg-emerald-500/10" onClick={() => handleReview(5)}>
-            5 · Отлично
-          </Button>
-        </div>
-      )}
-    </div>
+    </main>
   )
 }

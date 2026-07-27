@@ -146,7 +146,7 @@ export interface CardDetail {
   reviews_count: number
 }
 
-export async function updateCard(card_id:number, front: string, back: string) {
+export async function updateCard(card_id: number, front: string, back: string) {
   const res = await apiClient.patch<CardDetail>(`/api/v1/cards/${card_id}`, {
     front,
     back,
@@ -192,11 +192,10 @@ export async function createDeck(title: string) {
   return res.data
 }
 
-
-/*export async function updateDeck(deckId: number, title: string) {
-  const res = await apiClient.patch<Deck>(`/api/v1/decks/${deckId}`, { title })
+export async function updateDeck(deckId: number, title: string) {
+  const res = await apiClient.patch<DeckDetail>(`/api/v1/decks/${deckId}`, { title })
   return res.data
-} */
+}
 
 export async function deleteDeck(deck_id: number) {
   const res = await apiClient.delete(`/api/v1/decks/${deck_id}`)
@@ -207,40 +206,32 @@ export async function deleteCard(card_id: number) {
   const res = await apiClient.delete(`/api/v1/cards/${card_id}`)
   return res.data
 }
-/*
-export async function getCard(cardId: number) {
-  const res = await apiClient.get<Card>(`/api/v1/cards/${cardId}`)
-  return res.data
+export interface ReviewCard {
+  id: number
+  front: string
+  back: string
 }
 
-export async function updateCard(cardId: number, front: string, back: string) {
-  const res = await apiClient.patch<Card>(`/api/v1/cards/${cardId}`, {
-    front,
-    back,
-  })
-  return res.data
+export interface ReviewResponse {
+  cards: ReviewCard[]
+  total_cards: number
 }
 
-export async function deleteCard(cardId: number) {
-  const res = await apiClient.delete(`/api/v1/cards/${cardId}`)
-  return res.data
-}
-
-
-// --- Review API ---
-export async function getDueCards(deckId?: number, limit = 10) {
-  const res = await apiClient.get<DueCardsResponse>("/api/v1/cards/due", {
-    params: {
-      ...(deckId !== undefined && { deck_id: deckId }),
-      limit,
-    },
-  })
+export async function getReviewCards(deckId: number, limit = 10) {
+  const res = await apiClient.get<ReviewResponse>(
+    `/api/v1/decks/${deckId}/review`,
+    {
+      params: { limit },
+    }
+  )
 
   return res.data
 }
 
 export async function reviewCard(cardId: number, rating: number) {
-  const res = await apiClient.post(`/api/v1/cards/${cardId}/review`, { rating })
+  const res = await apiClient.post(`/api/v1/cards/${cardId}/review`, {
+    rating,
+  })
+
   return res.data
 }
-*/

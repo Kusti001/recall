@@ -6,6 +6,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.repositories import CardRepository, ReviewRepository
 
+from app.schemas import CardReviewList
 
 class ReviewService:
     def __init__(self, session: AsyncSession):
@@ -13,13 +14,19 @@ class ReviewService:
         self.cards = CardRepository(session)
         self.reviews = ReviewRepository(session)
 
-    async def get_due_cards(self, user_id: uuid.UUID, deck_id: int|None , limit: int):
+    async def get_due_cards(self, user_id: uuid.UUID, deck_id: int , limit: int):
         cards = await self.cards.get_due_cards(
             user_id=user_id,
             deck_id=deck_id,
             limit=limit
         )
-        return cards
+        return {
+            "cards": [
+                CardReviewList.model_validate(card)
+                for card in cards
+            ],
+            "total_cards": len(cards)
+        }
 
     async def review_card(self, user_id: uuid.UUID, card_id: int, rating: int):
         card = await self.cards.get_by_id(card_id)
