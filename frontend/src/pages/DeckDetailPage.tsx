@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react"
-import { useParams } from "react-router-dom"
-
+import { useNavigate, useParams } from "react-router-dom"
 import {
   getDeckDetail,
   getDeckCards,
@@ -8,23 +7,29 @@ import {
   createCard,
   updateCard,
   deleteCard,
+  updateDeck,
+  deleteDeck,
 } from "@/shared/api/api"
 import type { DeckDetail, CardListItem, CardDetail } from "@/shared/api/api"
-
 import { DeckHeader } from "@/components/DeckDetailPage/DeckHeader"
 import { CardsTable } from "@/components/DeckDetailPage/CardsTable"
 import { CardPreview } from "@/components/DeckDetailPage/CardPreview"
 import { CreateCardDialog } from "@/components/DeckDetailPage/CreateCardDialog"
 import { EditCardDialog } from "@/components/DeckDetailPage/EditCardDialog"
+import { EditDeckDialog } from "@/components/DeckDetailPage/EditDeckDialog"
+import { DeleteDeckDialog } from "@/components/DeckDetailPage/DeleteDeckDialog"
 
 export function DeckDetailPage() {
   const { id } = useParams()
+  const navigate = useNavigate()
   const [deck, setDeck] = useState<DeckDetail | null>(null)
   const [cards, setCards] = useState<CardListItem[]>([])
   const [selectedCard, setSelectedCard] = useState<CardListItem | null>(null)
   const [cardDetails, setCardDetails] = useState<Record<number, CardDetail>>({})
   const [createOpen, setCreateOpen] = useState(false)
   const [editOpen, setEditOpen] = useState(false)
+  const [editDeckOpen, setEditDeckOpen] = useState(false)
+  const [deleteDeckOpen, setDeleteDeckOpen] = useState(false)
 
   async function handleSelectCard(card: CardListItem) {
     setSelectedCard(card)
@@ -35,13 +40,11 @@ export function DeckDetailPage() {
 
   useEffect(() => {
     if (!id) return
-
     async function loadDeck() {
       const deckData = await getDeckDetail(Number(id))
       const cardsData = await getDeckCards(Number(id))
       setDeck(deckData)
       setCards(cardsData.cards)
-
       if (cardsData.cards.length > 0) {
         const firstCard = cardsData.cards[0]
         setSelectedCard(firstCard)
@@ -49,7 +52,6 @@ export function DeckDetailPage() {
         setCardDetails((prev) => ({ ...prev, [firstCard.id]: detail }))
       }
     }
-
     loadDeck()
   }, [id])
 
@@ -85,6 +87,18 @@ export function DeckDetailPage() {
     setSelectedCard(null)
   }
 
+  async function handleRenameDeck(title: string) {
+    if (!deck) return
+    const updated = await updateDeck(deck.id, title)
+    setDeck((prev) => (prev ? { ...prev, title: updated.title } : prev))
+  }
+
+  async function handleDeleteDeck() {
+    if (!deck) return
+    await deleteDeck(deck.id)
+    navigate("/decks")
+  }
+
   if (!deck) return <div>Loading...</div>
 
   const selectedDetail = selectedCard ? cardDetails[selectedCard.id] : null
@@ -97,6 +111,8 @@ export function DeckDetailPage() {
         dueCards={deck.due_cards}
         deckId={deck.id}
         onAddCard={() => setCreateOpen(true)}
+        onDeleteDeck={() => setDeleteDeckOpen(true)}
+        onEditDeck={() => setEditDeckOpen(true)}
       />
 
       <section className="mt-8 grid items-start gap-6 lg:grid-cols-[1fr_340px]">
@@ -125,6 +141,18 @@ export function DeckDetailPage() {
         onOpenChange={setEditOpen}
         card={selectedDetail}
         onSave={handleUpdateCard}
+      />
+      <EditDeckDialog
+        open={editDeckOpen}
+        onOpenChange={setEditDeckOpen}
+        currentTitle={deck.title}
+        onSave={handleRenameDeck}
+      />
+      <DeleteDeckDialog
+        open={deleteDeckOpen}
+        onOpenChange={setDeleteDeckOpen}
+        deckTitle={deck.title}
+        onConfirm={handleDeleteDeck}
       />
     </main>
   )
