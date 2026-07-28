@@ -9,15 +9,24 @@ from app.schemas import CardReviewSchema
 router = APIRouter(prefix="", tags=["v1 / review"])
 
 
-@router.get("/decks/{deck_id}/review")
+@router.get("/review/cards")
 async def get_due_cards(
-    deck_id: int,
+    deck_id: int | None = None,
     limit: int = 10,
     user: User = Depends(get_current_user),
     session: AsyncSession = Depends(get_async_session),
 ):
     service = ReviewService(session)
     data = await service.get_due_cards(user_id=user.id, deck_id=deck_id, limit=limit)
+    return data
+
+@router.get("/review/decks")
+async def get_review_decks(
+    user: User = Depends(get_current_user),
+    session: AsyncSession = Depends(get_async_session),
+):
+    service = ReviewService(session)
+    data = await service.get_review_decks(user_id=user.id)
     return data
 
 @router.post("/cards/{card_id}/review")

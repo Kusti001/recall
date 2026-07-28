@@ -5,27 +5,24 @@ from sqlalchemy import func
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.repositories import CardRepository, ReviewRepository
-
+from app.repositories.deck import DeckRepository
 from app.schemas import CardReviewList
+
 
 class ReviewService:
     def __init__(self, session: AsyncSession):
         self.session = session
         self.cards = CardRepository(session)
         self.reviews = ReviewRepository(session)
+        self.decks = DeckRepository(session)
 
-    async def get_due_cards(self, user_id: uuid.UUID, deck_id: int , limit: int):
+    async def get_due_cards(self, user_id: uuid.UUID, deck_id: int | None, limit: int):
         cards = await self.cards.get_due_cards(
-            user_id=user_id,
-            deck_id=deck_id,
-            limit=limit
+            user_id=user_id, deck_id=deck_id, limit=limit
         )
         return {
-            "cards": [
-                CardReviewList.model_validate(card)
-                for card in cards
-            ],
-            "total_cards": len(cards)
+            "cards": [CardReviewList.model_validate(card) for card in cards],
+            "total_cards": len(cards),
         }
 
     async def review_card(self, user_id: uuid.UUID, card_id: int, rating: int):
@@ -35,23 +32,32 @@ class ReviewService:
         if rating < 0 or rating > 5:
             raise ValueError("Rating must be between 0 and 5")
 
-        #SRS algorithm
+        # SRS algorithm
         if rating >= 3:
-                if card.reviews_count == 0:
-                    card.interval = 1
-                elif card.reviews_count == 1:
-                    card.interval = 6
-                else:
-                    card.interval = round(card.interval * card.ease_factor)
-                card.reviews_count += 1
+            if card.reviews_count == 0:
+                card.interval = 1
+            elif card.reviews_count == 1:
+                card.interval = 6
+            else:
+                card.interval = round(card.interval * card.ease_factor)
+            card.reviews_count += 1
         else:
             card.interval = 1
             card.reviews_count = 0
 
         card.ease_factor = max(
-            card.ease_factor + (0.1 - (5 - rating) * (0.08 + (5 - rating) * 0.02)),
-            1.3
+            card.ease_factor + (0.1 - (5 - rating) * (0.08 + (5 - rating) * 0.02)), 1.3
         )
         card.next_review = func.now() + timedelta(days=card.interval)
-        await self.reviews.create(user_id=user_id,card_id=card_id, rating=rating)
+        await self.reviews.create(user_id=user_id, card_id=card_id, rating=rating)
         return card
+
+    async def get_review_decks(self, user_id: uuid.UUID):
+        decks = await self.decks.get_review_decks(
+            user_id=user_id,
+        )
+        return {
+            "decks": decks,
+            "total_decks": len(decks),
+            "total_due": sum(deck["due"] for deck in decks),
+        }

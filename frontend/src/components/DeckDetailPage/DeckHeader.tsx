@@ -47,7 +47,7 @@ export function DeckHeader({
             <Button variant="outline" onClick={onAddCard}>
               + Добавить карточку
             </Button>
-            <Link to={`/review/${deckId}`}>
+            <Link to={`/review/deck/${deckId}`}>
               <Button>Повторить сейчас</Button>
             </Link>
           </div>

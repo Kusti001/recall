@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react"
 import { useParams } from "react-router-dom"
-import { GradeBar } from "@/components/ReviewPage/GradeBar"
-import { ReviewCard as ReviewCardComponent } from "@/components/ReviewPage/ReviewCard"
+import { GradeBar } from "@/components/ReviewSessionPage/GradeBar"
+import { ReviewCard as ReviewCardComponent } from "@/components/ReviewSessionPage/ReviewCard"
 import { getReviewCards, reviewCard } from "@/shared/api/api"
 import type { ReviewCard } from "@/shared/api/api"
 
-export function ReviewPage() {
+export function ReviewSessionPage() {
   const { id } = useParams()
   const [cards, setCards] = useState<ReviewCard[]>([])
   const [current, setCurrent] = useState(0)
@@ -14,12 +14,14 @@ export function ReviewPage() {
   const [pressedGrade, setPressedGrade] = useState<number | null>(null)
 
   useEffect(() => {
-    if (!id) return
-
     async function loadReviewCards() {
       try {
         setLoading(true)
-        const response = await getReviewCards(Number(id), 20)
+
+        const response = await getReviewCards({
+          deckId: id ? Number(id) : undefined,
+        })
+
         setCards(response.cards)
         setCurrent(0)
         setShowAnswer(false)

@@ -80,3 +80,33 @@ class DeckRepository:
         result = await self.session.execute(stmt)
 
         return result.scalars().all()
+
+    async def get_review_decks(self, user_id: UUID):
+        stmt = (
+            select(
+                Deck.id,
+                Deck.title,
+                func.count(Card.id).label("total_cards"),
+                func.count(case((Card.interval >= 21, 1))).label("mastered"),
+                func.count(case((Card.next_review <= func.now(), 1))).label("due"),
+            )
+            .join(Card, Card.deck_id == Deck.id)
+            .where(Deck.user_id == user_id)
+            .group_by(Deck.id)
+            .having(
+                func.count(case((Card.next_review <= func.now(), 1))) > 0
+            )
+        )
+
+        result = await self.session.execute(stmt)
+
+        return [
+            {
+                "id": row.id,
+                "title": row.title,
+                "total_cards": row.total_cards,
+                "mastered": row.mastered,
+                "due": row.due,
+            }
+            for row in result
+        ]

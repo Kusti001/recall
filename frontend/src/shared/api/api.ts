@@ -217,13 +217,16 @@ export interface ReviewResponse {
   total_cards: number
 }
 
-export async function getReviewCards(deckId: number, limit = 10) {
-  const res = await apiClient.get<ReviewResponse>(
-    `/api/v1/decks/${deckId}/review`,
-    {
-      params: { limit },
-    }
-  )
+export async function getReviewCards({deckId,limit,}: {
+  deckId?: number
+  limit?: number
+} = {}) {
+  const res = await apiClient.get("/api/v1/review/cards", {
+    params: {
+      deck_id: deckId,
+      limit,
+    },
+  })
 
   return res.data
 }
@@ -233,5 +236,10 @@ export async function reviewCard(cardId: number, rating: number) {
     rating,
   })
 
+  return res.data
+}
+
+export async function getReviewDecks() {
+  const res = await apiClient.get<DecksResponse>(`/api/v1/review/decks`)
   return res.data
 }

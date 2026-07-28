@@ -5,10 +5,11 @@ import { AuthCallbackPage } from "./pages/AuthCallbackPage"
 import { MePage } from "@/pages/MePage"
 import { DecksPage } from "./pages/DecksPage"
 import { DeckDetailPage } from "./pages/DeckDetailPage"
-import { ReviewPage } from "./pages/ReviewPage"
+import { ReviewSessionPage } from "@/pages/ReviewSessionPage"
 import { Header } from "@/components/Header/Header"
 import { Outlet } from "react-router-dom"
 import { HowThisWorksPage } from "./pages/HowThisWorksPage"
+import { ReviewMenuPage } from "@/pages/ReviewMenuPage"
 
 function Layout() {
   return (
@@ -33,8 +34,9 @@ const router = createBrowserRouter([
       { path: "/me", element: <MePage /> },
       { path: "/decks", element: <DecksPage /> },
       { path: "/decks/:id", element: <DeckDetailPage /> },
-      { path: "/review/:id", element: <ReviewPage /> },
-      { path: "/review", element: <DecksPage /> },
+      { path: "/review/", element: <ReviewMenuPage /> },
+      { path: "/review/deck/:id", element: <ReviewSessionPage /> },
+      { path: "/review/all", element: <ReviewSessionPage /> },
       { path: "/auth/:provider/callback", element: <AuthCallbackPage /> },
     ],
   },
