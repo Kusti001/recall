@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 from uuid import UUID
 
 from pydantic import BaseModel
@@ -44,7 +44,7 @@ class CardListItem(BaseModel):
             interval=card.interval,
             reviews=card.reviews_count,
             #TODO: add MORE STATUSES: due, mastered, new, learning, review
-            status="due" if card.next_review <= datetime.now() else ( "mastered" if card.interval >= 21 else "learning" )
+            status="due" if card.next_review <= datetime.now(timezone.utc) else ( "mastered" if card.interval >= 21 else "learning" )
         )
 
 class CardReviewList(BaseModel):

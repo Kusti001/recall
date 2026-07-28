@@ -2,7 +2,7 @@ from datetime import datetime
 from typing import TYPE_CHECKING
 from uuid import UUID
 
-from sqlalchemy import ForeignKey, func
+from sqlalchemy import DateTime, ForeignKey, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.db.base import Base
@@ -23,7 +23,9 @@ class Review(Base):
 
     rating: Mapped[int] = mapped_column()
 
-    reviewed_at: Mapped[datetime] = mapped_column(server_default=func.now())
+    reviewed_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        server_default=func.now())
 
     user: Mapped["User"] = relationship(back_populates="reviews")
     card: Mapped["Card"] = relationship(back_populates="reviews")

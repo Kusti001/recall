@@ -2,7 +2,7 @@ from datetime import datetime
 from typing import TYPE_CHECKING
 from uuid import UUID
 
-from sqlalchemy import ForeignKey, func
+from sqlalchemy import DateTime, ForeignKey, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.db.base import Base
@@ -20,10 +20,17 @@ class Deck(Base):
 
     title: Mapped[str] = mapped_column()
 
-    created_at: Mapped[datetime] = mapped_column(server_default=func.now())
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        server_default=func.now(),
+    )
     updated_at: Mapped[datetime] = mapped_column(
-        server_default=func.now(), onupdate=func.now()
+        DateTime(timezone=True),
+        server_default=func.now(),
+        onupdate=func.now(),
     )
 
     user: Mapped["User"] = relationship(back_populates="decks")
-    cards: Mapped[list["Card"]] = relationship(back_populates="deck", passive_deletes=True)
+    cards: Mapped[list["Card"]] = relationship(
+        back_populates="deck", passive_deletes=True
+    )
