@@ -1,10 +1,10 @@
-// AuthCallbackPage.tsx
 import { useNavigate, useParams, useSearchParams } from "react-router-dom"
 import {
   exchangeOAuthCode,
   oauthProviders,
   type OAuthProvider,
 } from "@/shared/api/api"
+import { useAuth } from "@/shared/auth/useAuth"
 import { useEffect, useRef } from "react"
 
 export function AuthCallbackPage() {
@@ -12,6 +12,8 @@ export function AuthCallbackPage() {
   const [searchParams] = useSearchParams()
   const navigate = useNavigate()
   const isSent = useRef(false)
+
+  const { login } = useAuth()
 
   useEffect(() => {
     const code = searchParams.get("code")
@@ -29,8 +31,8 @@ export function AuthCallbackPage() {
 
     exchangeOAuthCode(provider, code, state)
       .then((token) => {
-        localStorage.setItem("token", token)
-        navigate("/", { replace: true })
+        login(token)
+        navigate("/")
       })
       .catch((err) => {
         console.error(err)
