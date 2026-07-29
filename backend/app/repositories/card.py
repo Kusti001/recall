@@ -28,7 +28,7 @@ class CardRepository:
     async def delete(self, card: Card):
         await self.session.delete(card)
 
-    async def get_due_cards(self, user_id: UUID, deck_id: int | None, limit: int):
+    async def get_review_cards(self, user_id: UUID, deck_id: int | None, limit: int):
         query = (
                 select(Card)
                 .where(Card.user_id == user_id)

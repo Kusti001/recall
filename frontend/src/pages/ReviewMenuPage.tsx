@@ -6,7 +6,7 @@ import { ReviewDeckCard } from "@/components/ReviewMenuPage/ReviewDeckCard"
 
 import { getReviewDecks } from "@/shared/api/api"
 
-import type {DecksResponse } from "@/shared/api/api"
+import type { DecksResponse } from "@/shared/api/api"
 
 export function ReviewMenuPage() {
   const [data, setData] = useState<DecksResponse | null>(null)

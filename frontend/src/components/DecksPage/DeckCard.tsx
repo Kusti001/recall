@@ -5,7 +5,7 @@ import type { DeckStats } from "@/shared/api/api";
 export function DeckCard({ deck }: { deck: DeckStats }) {
 
   const progress = deck.total_cards
-    ? Math.round((deck.mastered / deck.total_cards) * 100)
+    ? Math.round((deck.mastered_cards / deck.total_cards) * 100)
     : 0;
   return (
     <Link
@@ -19,9 +19,9 @@ export function DeckCard({ deck }: { deck: DeckStats }) {
                 >
                   {deck.title.slice(0, 2)}
                 </div>
-        {deck.due > 0 ? (
+        {deck.due_cards > 0 ? (
           <span className="rounded-full bg-primary/10 px-3 py-1 font-mono text-xs text-primary">
-            {deck.due} сегодня
+            {deck.due_cards} сегодня
           </span>
         ) : (
           <span className="rounded-full bg-muted px-3 py-1 font-mono text-xs text-muted-foreground">

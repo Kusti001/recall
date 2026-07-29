@@ -1,12 +1,8 @@
-import { createContext, useState } from "react"
-import type {ReactNode} from "react"
-interface AuthContextType {
-  token: string | null
-  login: (token: string) => void
-  logout: () => void
-}
+import { useState } from "react"
+import type { ReactNode } from "react"
 
-export const AuthContext = createContext<AuthContextType | null>(null)
+import { logout as logoutRequest } from "@/shared/api/auth"
+import { AuthContext } from "./AuthContext"
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [token, setToken] = useState<string | null>(
@@ -18,9 +14,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setToken(token)
   }
 
-  function logout() {
-    localStorage.removeItem("token")
-    setToken(null)
+  async function logout() {
+    try {
+      await logoutRequest()
+    } finally {
+      localStorage.removeItem("token")
+      setToken(null)
+    }
   }
 
   return (

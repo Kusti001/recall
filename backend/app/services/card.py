@@ -2,6 +2,7 @@ import uuid
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.core.exceptions import NotFoundError, PermissionDeniedError
 from app.repositories import CardRepository
 from app.schemas import CardCreate, CardUpdate
 
@@ -23,7 +24,10 @@ class CardService:
     async def update_card(self, user_id: uuid.UUID, card_id: int, data: CardUpdate):
         card = await self.cards.get_by_id(card_id)
         if not card or card.user_id != user_id:
-            raise ValueError("Card not found or access denied")
+            raise NotFoundError("Card not found")
+        if card.user_id != user_id:
+            raise PermissionDeniedError("Access denied")
+
         if data.deck_id is not None:
             card.deck_id = data.deck_id
         if data.front is not None:
@@ -35,11 +39,15 @@ class CardService:
     async def delete_card(self, user_id: uuid.UUID, card_id: int):
         card = await self.cards.get_by_id(card_id)
         if not card or card.user_id != user_id:
-            raise ValueError("Card not found or access denied")
+            raise NotFoundError("Card not found")
+        if card.user_id != user_id:
+            raise PermissionDeniedError("Access denied")
         await self.cards.delete(card)
 
     async def get_card(self, user_id: uuid.UUID, card_id: int):
         card = await self.cards.get_by_id(card_id)
         if not card or card.user_id != user_id:
-            raise ValueError("Card not found or access denied")
+            raise NotFoundError("Card not found")
+        if card.user_id != user_id:
+            raise PermissionDeniedError("Access denied")
         return card

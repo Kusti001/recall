@@ -4,7 +4,7 @@ from app.db.engine import engine
 
 
 async def create_tables():
-    print(list(Base.metadata.tables.keys()))
+    #print(list(Base.metadata.tables.keys()))
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
 

@@ -29,7 +29,7 @@ export function Hero() {
             Создать первую колоду
           </Link>
           <Link
-            to=""
+            to="/how"
             className={buttonVariants({ variant: "outline" })}
           >
             Как считается интервал →

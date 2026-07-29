@@ -1,9 +1,16 @@
-import uuid
+from uuid import UUID
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.core.exceptions import NotFoundError, PermissionDeniedError
 from app.repositories import DeckRepository
-from app.schemas import DeckCreate, CardListItem
+from app.schemas import (
+    CardListItem,
+    DeckCardsResponse,
+    DeckCreate,
+    DecksResponse,
+    DeckStats,
+)
 
 
 class DeckService:
@@ -11,46 +18,63 @@ class DeckService:
         self.session = session
         self.decks = DeckRepository(session)
 
-    async def create_deck(self, user_id: uuid.UUID, data: DeckCreate):
+    async def create_deck(self, user_id: UUID, data: DeckCreate):
         card = await self.decks.create(user_id=user_id, title=data.title)
         return card
 
-    async def get_deck(self, user_id: uuid.UUID, deck_id: int):
+    async def get_deck_stats(self, user_id: UUID, deck_id: int):
         deck = await self.decks.get_by_id(deck_id)
         if not deck or deck.user_id != user_id:
-            raise ValueError("Deck not found or access denied")
+            raise NotFoundError("Deck not found")
+        if deck.user_id != user_id:
+            raise PermissionDeniedError("Access denied")
 
-        deck = await self.decks.get_by_id_with_stats(deck_id)
+        deck = await self.decks.get_deck_stats(deck_id)
         return deck
 
-    async def get_decks(self, user_id: uuid.UUID):
-        decks = await self.decks.get_by_user_id(user_id)
-        return decks
+    async def get_decks(self, user_id: UUID):
 
-    async def delete_deck(self, user_id: uuid.UUID, deck_id: int):
+        rows = await self.decks.get_decks(user_id)
+
+        decks = [DeckStats.model_validate(row) for row in rows]
+
+        return DecksResponse(
+            decks=decks,
+            total_due=sum(deck.due_cards for deck in decks),
+            total_decks=len(decks),
+        )
+
+    async def delete_deck(self, user_id: UUID, deck_id: int):
         deck = await self.decks.get_by_id(deck_id)
+
         if not deck or deck.user_id != user_id:
-            raise ValueError("Deck not found or access denied")
+            raise NotFoundError("Deck not found")
+        if deck.user_id != user_id:
+            raise PermissionDeniedError("Access denied")
+
         await self.decks.delete(deck)
 
-    async def update_deck(self, user_id: uuid.UUID, data: DeckCreate, deck_id: int):
+    async def update_deck(self, user_id: UUID, data: DeckCreate, deck_id: int):
         deck = await self.decks.get_by_id(deck_id)
         if not deck or deck.user_id != user_id:
-            raise ValueError("Deck not found or access denied")
+            raise NotFoundError("Deck not found")
+        if deck.user_id != user_id:
+            raise PermissionDeniedError("Access denied")
         deck.title = data.title
-        await self.session.flush()
         return deck
 
-    async def get_cards_by_deck(self, user_id: uuid.UUID, deck_id: int):
+    async def get_cards_by_deck(self, user_id: UUID, deck_id: int):
         deck = await self.decks.get_by_id(deck_id)
-        if not deck or deck.user_id != user_id:
-            raise ValueError("Deck not found or access denied")
+
+        if not deck:
+            raise NotFoundError("Deck not found")
+
+        if deck.user_id != user_id:
+            raise PermissionDeniedError("Access denied")
 
         cards = await self.decks.get_cards_by_deck(deck_id)
-        return {
-                "cards": [
-                    CardListItem.from_card(card)
-                    for card in cards
-                ],
-                "total": len(cards)
-            }
+
+        return DeckCardsResponse(
+            cards=[CardListItem.from_card(card) for card in cards],
+            total_cards=len(cards),
+        )

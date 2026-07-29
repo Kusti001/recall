@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import { useNavigate, useParams } from "react-router-dom"
 import {
-  getDeckDetail,
+  getDeckStats,
   getDeckCards,
   getCardDetail,
   createCard,
@@ -10,7 +10,7 @@ import {
   updateDeck,
   deleteDeck,
 } from "@/shared/api/api"
-import type { DeckDetail, CardListItem, CardDetail } from "@/shared/api/api"
+import type { DeckStats, CardListItem, CardDetail } from "@/shared/api/types"
 import { DeckHeader } from "@/components/DeckDetailPage/DeckHeader"
 import { CardsTable } from "@/components/DeckDetailPage/CardsTable"
 import { CardPreview } from "@/components/DeckDetailPage/CardPreview"
@@ -22,7 +22,7 @@ import { DeleteDeckDialog } from "@/components/DeckDetailPage/DeleteDeckDialog"
 export function DeckDetailPage() {
   const { id } = useParams()
   const navigate = useNavigate()
-  const [deck, setDeck] = useState<DeckDetail | null>(null)
+  const [deck, setDeck] = useState<DeckStats | null>(null)
   const [cards, setCards] = useState<CardListItem[]>([])
   const [selectedCard, setSelectedCard] = useState<CardListItem | null>(null)
   const [cardDetails, setCardDetails] = useState<Record<number, CardDetail>>({})
@@ -41,7 +41,7 @@ export function DeckDetailPage() {
   useEffect(() => {
     if (!id) return
     async function loadDeck() {
-      const deckData = await getDeckDetail(Number(id))
+      const deckData = await getDeckStats(Number(id))
       const cardsData = await getDeckCards(Number(id))
       setDeck(deckData)
       setCards(cardsData.cards)

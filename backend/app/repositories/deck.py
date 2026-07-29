@@ -2,11 +2,9 @@ from uuid import UUID
 
 from sqlalchemy import case, select
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.orm import selectinload
 from sqlalchemy.sql.expression import func
 
 from app.models import Card, Deck
-from app.schemas import DeckStats
 
 
 class DeckRepository:
@@ -22,45 +20,39 @@ class DeckRepository:
     async def get_by_id(self, deck_id: int) -> Deck | None:
         return await self.session.get(Deck, deck_id)
 
-    async def get_by_user_id(self, user_id: UUID):
+    async def get_decks(self, user_id: UUID):
         stmt = (
             select(
                 Deck.id,
                 Deck.title,
                 func.count(Card.id).label("total_cards"),
-                func.count(case((Card.interval >= 21, 1))).label("mastered"),
-                func.count(case((Card.next_review <= func.now(), 1))).label("due"),
+                func.count(case((Card.interval >= 21, 1))).label("mastered_cards"),
+                func.count(case((Card.next_review <= func.now(), 1))).label(
+                    "due_cards"
+                ),
             )
             .join(Card, Card.deck_id == Deck.id, isouter=True)
             .where(Deck.user_id == user_id)
             .group_by(Deck.id)
         )
+
         result = await self.session.execute(stmt)
-        decks = [
-            DeckStats.model_validate(row._mapping)
-            for row in result
-        ]
-        return {
-            "decks": decks,
-            "total_due": sum(deck.due for deck in decks),
-            "total_decks": len(decks)
-        }
+
+        return result.mappings().all()
 
     async def delete(self, deck: Deck):
         await self.session.delete(deck)
 
-    async def get_by_id_with_stats(self, deck_id: int):
+    async def get_deck_stats(self, deck_id: int):
         stmt = (
             select(
                 Deck.id,
                 Deck.title,
                 func.count(Card.id).label("total_cards"),
-                func.count(
-                    case((Card.interval >= 21, 1))
-                ).label("mastered_cards"),
-                func.count(
-                    case((Card.next_review <= func.now(), 1))
-                ).label("due_cards"),
+                func.count(case((Card.interval >= 21, 1))).label("mastered_cards"),
+                func.count(case((Card.next_review <= func.now(), 1))).label(
+                    "due_cards"
+                ),
             )
             .join(Card, Card.deck_id == Deck.id, isouter=True)
             .where(Deck.id == deck_id)
@@ -72,10 +64,7 @@ class DeckRepository:
         return result.mappings().first()
 
     async def get_cards_by_deck(self, deck_id: int):
-        stmt = (
-            select(Card)
-            .where(Card.deck_id == deck_id)
-        )
+        stmt = select(Card).where(Card.deck_id == deck_id)
 
         result = await self.session.execute(stmt)
 
@@ -87,26 +76,15 @@ class DeckRepository:
                 Deck.id,
                 Deck.title,
                 func.count(Card.id).label("total_cards"),
-                func.count(case((Card.interval >= 21, 1))).label("mastered"),
-                func.count(case((Card.next_review <= func.now(), 1))).label("due"),
+                func.count(case((Card.interval >= 21, 1))).label("mastered_cards"),
+                func.count(case((Card.next_review <= func.now(), 1))).label("due_cards"),
             )
             .join(Card, Card.deck_id == Deck.id)
             .where(Deck.user_id == user_id)
             .group_by(Deck.id)
-            .having(
-                func.count(case((Card.next_review <= func.now(), 1))) > 0
-            )
+            .having(func.count(case((Card.next_review <= func.now(), 1))) > 0)
         )
 
         result = await self.session.execute(stmt)
 
-        return [
-            {
-                "id": row.id,
-                "title": row.title,
-                "total_cards": row.total_cards,
-                "mastered": row.mastered,
-                "due": row.due,
-            }
-            for row in result
-        ]
+        return result.mappings().all()

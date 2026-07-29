@@ -1,7 +1,10 @@
-from fastapi_users.authentication import AuthenticationBackend, BearerTransport, JWTStrategy
+from fastapi_users.authentication import (
+    AuthenticationBackend,
+    BearerTransport,
+    JWTStrategy,
+)
 
 from .config import settings
-
 
 SECRET = settings.JWT_SECRET_KEY
 

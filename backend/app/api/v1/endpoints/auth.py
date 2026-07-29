@@ -15,6 +15,16 @@ router.include_router(
 )
 
 router.include_router(
+    fastapi_users.get_register_router(UserRead, UserCreate)
+)
+
+@router.get("/me")
+async def read_current_user(
+    current_user: User = Depends(get_current_user),
+):
+    return current_user
+
+router.include_router(
     fastapi_users.get_oauth_router(
         google_oauth_client,
         auth_backend,
@@ -25,15 +35,3 @@ router.include_router(
     ),
     prefix="/google",
 )
-
-router.include_router(
-    fastapi_users.get_register_router(UserRead, UserCreate),
-    prefix="/auth",
-)
-
-
-@router.get("/me")
-async def read_current_user(
-    current_user: User = Depends(get_current_user),
-):
-    return current_user
