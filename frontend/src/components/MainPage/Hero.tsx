@@ -1,4 +1,3 @@
-import { Button } from "@/components/ui/button"
 import { ForgettingCurve } from "./ForgettingCurve"
 import { Card, CardHeader, CardContent, CardTitle } from "@/components/ui/card"
 import { buttonVariants } from "@/components/ui/button";

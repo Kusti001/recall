@@ -1,4 +1,4 @@
-FROM python:3.11-alpine
+FROM python:3.11-slim
 
 WORKDIR /app
 
@@ -7,13 +7,10 @@ ENV PYTHONUNBUFFERED=1
 
 COPY requirements.txt .
 
-# Устанавливаем зависимости приложения
-RUN pip install --no-cache-dir --upgrade -r requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
 
-# Копируем остальной код бэкенда в контейнер
 COPY . .
 
-# Открываем порт, на котором работает FastAPI
 EXPOSE 8000
 
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["gunicorn", "app.main:app","-k", "uvicorn.workers.UvicornWorker", "-w", "2", "-b", "0.0.0.0:8000"]

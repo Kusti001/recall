@@ -7,7 +7,7 @@ interface Props {
 
 export function ReviewDeckCard({ deck }: Props) {
   const progress = deck.total_cards
-    ? Math.round((deck.mastered / deck.total_cards) * 100)
+    ? Math.round((deck.mastered_cards / deck.total_cards) * 100)
     : 0
 
   return (
@@ -19,7 +19,7 @@ export function ReviewDeckCard({ deck }: Props) {
         <h3 className="truncate font-medium">{deck.title}</h3>
 
         <span className="shrink-0 rounded-full bg-primary/10 px-3 py-1 text-sm text-primary">
-          {deck.due} сегодня
+          {deck.due_cards} сегодня
         </span>
       </div>
 

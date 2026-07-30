@@ -1,14 +1,16 @@
+name: recall-dev
+
 services:
-  db:
-    image: postgres:latest
-    container_name: db_dev_container
+  postgres:
+    image: postgres:17
+    container_name: recall_postgres_dev
     restart: unless-stopped
     env_file:
-      - ./db/.env
+      - ./.env.dev
     ports:
       - "5432:5432"
     volumes:
-      - postgres_data:/var/lib/postgresql
+      - postgres_data:/var/lib/postgresql/data
 
 volumes:
   postgres_data:

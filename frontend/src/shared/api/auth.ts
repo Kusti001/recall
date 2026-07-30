@@ -26,7 +26,7 @@ export async function loginWithEmail(username: string, password: string) {
   params.append("password", password)
 
   const res = await apiClient.post<{ access_token: string }>(
-    "/api/v1/auth/jwt/login",
+    "/v1/auth/jwt/login",
     params,
     {
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
@@ -36,7 +36,7 @@ export async function loginWithEmail(username: string, password: string) {
 }
 
 export async function registerWithEmail(email: string, password: string) {
-  const res = await apiClient.post<User>("/api/v1/auth/register", {
+  const res = await apiClient.post<User>("/v1/auth/register", {
     email,
     password,
   })
@@ -44,12 +44,12 @@ export async function registerWithEmail(email: string, password: string) {
 }
 
 export async function logout() {
-    await apiClient.post("/api/v1/auth/jwt/logout")
+    await apiClient.post("/v1/auth/jwt/logout")
 }
 
 export async function getOAuthUrl(provider: OAuthProvider): Promise<string> {
   const res = await apiClient.get<{ authorization_url: string }>(
-    `/api/v1/auth/${provider}/authorize`
+    `/v1/auth/${provider}/authorize`
   )
   return res.data.authorization_url
 }
@@ -60,7 +60,7 @@ export async function exchangeOAuthCode(
   state: string
 ): Promise<string> {
   const res = await apiClient.get<{ access_token: string }>(
-    `/api/v1/auth/${provider}/callback`,
+    `/v1/auth/${provider}/callback`,
     {
       params: { code, state },
     }
@@ -69,6 +69,6 @@ export async function exchangeOAuthCode(
 }
 
 export async function getCurrentUser(): Promise<User> {
-  const res = await apiClient.get<User>("/api/v1/auth/me")
+  const res = await apiClient.get<User>("/v1/auth/me")
   return res.data
 }

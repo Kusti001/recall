@@ -5,7 +5,7 @@ export async function getReviewCards({
   deckId,
   limit,
 }: { deckId?: number; limit?: number } = {}) {
-  const res = await apiClient.get<ReviewCardsResponse>("/api/v1/review/cards", {
+  const res = await apiClient.get<ReviewCardsResponse>("/v1/review/cards", {
     params: {
       ...(deckId !== undefined && { deck_id: deckId }),
       limit,
@@ -16,7 +16,7 @@ export async function getReviewCards({
 }
 
 export async function reviewCard(cardId: number, rating: number) {
-  const res = await apiClient.post(`/api/v1/review/cards/${cardId}`, {
+  const res = await apiClient.post(`/v1/review/cards/${cardId}`, {
     rating,
   })
 
@@ -24,6 +24,6 @@ export async function reviewCard(cardId: number, rating: number) {
 }
 
 export async function getReviewDecks() {
-  const res = await apiClient.get<DecksResponse>(`/api/v1/review/decks`)
+  const res = await apiClient.get<DecksResponse>(`/v1/review/decks`)
   return res.data
 }

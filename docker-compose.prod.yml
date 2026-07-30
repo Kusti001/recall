@@ -1,33 +1,29 @@
 services:
-  db:
-    image: postgres:latest
-    container_name: db_container
+  postgres:
+    image: postgres:17
     restart: unless-stopped
+    container_name: recall_postgres
     env_file:
-      - ./db/.env
+      - ./.env.prod
     volumes:
-      - postgres_data:/var/lib/postgresql
+      - postgres_data:/var/lib/postgresql/data
 
   api:
     build:
       context: ./backend
       dockerfile: Dockerfile
-    container_name: api_container
+    container_name: recall_backend
     env_file:
-      - ./backend/.env
-    ports:
-      - "8000:8000"
+      - ./.env.prod
     depends_on:
-      - db
+      - postgres
     restart: unless-stopped
 
   frontend:
     build:
       context: ./frontend
       dockerfile: Dockerfile
-    container_name: frontend_container
-    env_file:
-      - ./frontend/.env
+    container_name: recall_frontend
     ports:
       - "80:80"
     depends_on:
