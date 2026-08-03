@@ -16,13 +16,13 @@ A fullstack flashcard application built around spaced repetition and active reca
 
 ## Table of Contents
 - [Getting Started](#getting-started)
-  - [Clone and install dependencies](#1-clone-and-install-dependencies)
-  - [Configure environment variables](#2-configure-environment-variables)
-  - [Run](#3-run)
+  - [Clone and install dependencies](#clone-and-install-dependencies)
+  - [Configure environment variables](#configure-environment-variables)
+  - [Run](#run)
 - [Project Structure](#project-structure)
 ## Getting Started
 
-### 1. Clone and install dependencies
+### Clone and install dependencies
 
 ```bash
 git clone https://github.com/kusti001/recall.git
@@ -43,18 +43,18 @@ cd frontend
 npm install
 ```
 
-### 2. Configure environment variables
+### Configure environment variables
 
 The project uses separate environment configurations for development and production.
 
-#### Development
+**Development**
 
 Development environment files:
 **backend/.env.dev**
 **frontend/.env.development**
 **.env.dev**
 
-#### Production
+**Production**
 
 Production uses a single environment file:
 **frontend/.env.production** for frontend build
@@ -62,7 +62,7 @@ Production uses a single environment file:
 
 
 
-### 3. Run
+### Run
 In separate terminals:
 ```bash
 # Database
