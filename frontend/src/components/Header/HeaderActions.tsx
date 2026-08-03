@@ -14,7 +14,7 @@ export function HeaderActions() {
   if (token) {
     return (
       <div className="flex items-center gap-3">
-        <Link to="/me" className={buttonVariants()}>
+        <Link to="/profile" className={buttonVariants()}>
           Профиль
         </Link>
 

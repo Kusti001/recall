@@ -70,6 +70,7 @@ docker compose -f docker-compose.dev.yml up -d
 
 # Backend
 cd backend
+alembic upgrade head
 uvicorn app.main:app --reload
 
 # Frontend
@@ -81,8 +82,9 @@ npm run dev
 
 ```bash
 docker compose -f docker-compose.prod.yml up -d --build
+docker compose -f docker-compose.prod.yml exec api alembic upgrade head
 ```
-
+> **Note:** run `alembic upgrade head` after every pull that includes new migrations.
 ## Project Structure
 
 ```

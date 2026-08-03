@@ -2,7 +2,6 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom"
 import { MainPage } from "./pages/MainPage"
 import { AuthPage } from "./pages/AuthPage"
 import { AuthCallbackPage } from "./pages/AuthCallbackPage"
-import { MePage } from "@/pages/MePage"
 import { DecksPage } from "./pages/DecksPage"
 import { DeckDetailPage } from "./pages/DeckDetailPage"
 import { ReviewSessionPage } from "@/pages/ReviewSessionPage"
@@ -10,6 +9,7 @@ import { Header } from "@/components/Header/Header"
 import { Outlet } from "react-router-dom"
 import { HowThisWorksPage } from "./pages/HowThisWorksPage"
 import { ReviewMenuPage } from "@/pages/ReviewMenuPage"
+import { ProfilePage } from "@/pages/ProfilePage"
 
 function Layout() {
   return (
@@ -32,7 +32,7 @@ const router = createBrowserRouter([
       { path: "/how", element: <HowThisWorksPage /> },
       { path: "/login", element: <AuthPage /> },
       { path: "/register", element: <AuthPage /> },
-      { path: "/me", element: <MePage /> },
+      { path: "/profile", element: <ProfilePage /> },
       { path: "/decks", element: <DecksPage /> },
       { path: "/decks/:id", element: <DeckDetailPage /> },
       { path: "/review/", element: <ReviewMenuPage /> },

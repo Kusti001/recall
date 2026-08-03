@@ -8,7 +8,7 @@ from .config import settings
 
 SECRET = settings.JWT_SECRET_KEY
 
-bearer_transport = BearerTransport(tokenUrl="api/v1/auth/jwt/login")
+bearer_transport = BearerTransport(tokenUrl="/v1/auth/jwt/login")
 
 
 def get_jwt_strategy() -> JWTStrategy:

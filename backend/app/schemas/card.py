@@ -1,5 +1,4 @@
-from datetime import datetime, UTC
-from uuid import UUID
+from datetime import UTC, datetime
 
 from pydantic import BaseModel
 
@@ -21,10 +20,12 @@ class CardRead(BaseModel):
 
     model_config = {"from_attributes": True}
 
+
 class CardUpdate(BaseModel):
     front: str | None = None
     back: str | None = None
     deck_id: int | None = None
+
 
 class CardListItem(BaseModel):
     id: int
@@ -34,7 +35,7 @@ class CardListItem(BaseModel):
     status: str
     reviews: int
 
-    #TODO: add status field RIGHT in model!!
+    # TODO: add status field RIGHT in model!!
     @classmethod
     def from_card(cls, card):
         return cls(
@@ -43,19 +44,24 @@ class CardListItem(BaseModel):
             back=card.back,
             interval=card.interval,
             reviews=card.reviews_count,
-            #TODO: add MORE STATUSES: due, mastered, new, learning, review
-            status="due" if card.next_review <= datetime.now(UTC) else ( "mastered" if card.interval >= 21 else "learning" )
+            # TODO: add MORE STATUSES: due, mastered, new, learning, review
+            status="due"
+            if card.next_review <= datetime.now(UTC)
+            else ("mastered" if card.interval >= 21 else "learning"),
         )
+
 
 class DeckCardsResponse(BaseModel):
     cards: list[CardListItem]
     total_cards: int
+
 
 class CardReviewList(BaseModel):
     id: int
     front: str
     back: str
     model_config = {"from_attributes": True}
+
 
 class ReviewCardsResponse(BaseModel):
     cards: list[CardReviewList]

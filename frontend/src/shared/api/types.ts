@@ -46,3 +46,19 @@ export interface CardDetail {
   ease_factor: number
   reviews_count: number
 }
+
+export interface HeatmapDay {
+  date: string
+  count: number
+}
+
+export interface ProfileStats {
+  display_name: string
+  created_at: string
+  retention_30d: number
+  current_streak: number
+  cards_studied: number
+  due_today: number
+  average_interval: number
+  heatmap: HeatmapDay[]
+}
