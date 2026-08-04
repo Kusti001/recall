@@ -8,6 +8,7 @@ from .card import (
     ReviewCardsResponse,
 )
 from .deck import DeckCreate, DeckRead, DecksResponse, DeckStats
+from .feedback import FeedbackCreate, FeedbackRead
 from .profile import HeatmapDay, ProfileStats
 from .review import CardReviewSchema
 from .user import UserCreate, UserRead, UserUpdate
@@ -24,6 +25,8 @@ __all__ = [
     "DeckRead",
     "DeckStats",
     "DecksResponse",
+    "FeedbackCreate",
+    "FeedbackRead",
     "HeatmapDay",
     "ProfileStats",
     "ReviewCardsResponse",

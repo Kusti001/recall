@@ -44,9 +44,6 @@ export function Hero() {
             <span className="text-white">4 мин</span> средняя сессия
           </div>
 
-          <div>
-            <span className="text-white">0₽</span> для первых 200 карточек
-          </div>
         </div>
       </div>
 

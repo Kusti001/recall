@@ -3,6 +3,7 @@ from fastapi import APIRouter
 from .endpoints.auth import router as auth_router
 from .endpoints.cards import router as cards_router
 from .endpoints.decks import router as decks_router
+from .endpoints.feedbacks import router as feedback_router
 from .endpoints.profile import router as profile_router
 from .endpoints.review import router as review_router
 
@@ -13,3 +14,4 @@ router.include_router(review_router)
 router.include_router(cards_router)
 router.include_router(decks_router)
 router.include_router(profile_router)
+router.include_router(feedback_router)

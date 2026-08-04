@@ -11,6 +11,10 @@ export function Header() {
       label: "Как это работает",
       href: "/how",
     },
+    {
+      label: ".dev",
+      href: "/devlog",
+    },
 
     ...(token
       ? [

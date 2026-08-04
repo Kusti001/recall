@@ -13,6 +13,10 @@ import { ReviewSessionPage } from "@/pages/ReviewSessionPage"
 import { HowThisWorksPage } from "./pages/HowThisWorksPage"
 import { ReviewMenuPage } from "@/pages/ReviewMenuPage"
 import { ProfilePage } from "@/pages/ProfilePage"
+import { DevLogPage } from "./pages/DevLogPage"
+import { FeedbackWidget } from "./components/FeedbackWidget"
+import { ErrorPage } from "./components/ErrorPage"
+import { AdminFeedbackPage } from "./pages/AdminFeedbackPage"
 
 function Layout() {
   return (
@@ -26,6 +30,7 @@ function Layout() {
           <Outlet />
         </div>
       </div>
+      <FeedbackWidget />
       <Toaster />
     </AuthProvider>
   )
@@ -34,6 +39,7 @@ function Layout() {
 const router = createBrowserRouter([
   {
     element: <Layout />,
+    errorElement: <ErrorPage />,
     children: [
       {
         path: "/",
@@ -42,6 +48,10 @@ const router = createBrowserRouter([
       {
         path: "/how",
         element: <HowThisWorksPage />,
+      },
+      {
+        path: "/admin/feedback",
+        element: <AdminFeedbackPage />,
       },
       {
         path: "/login",
@@ -54,6 +64,10 @@ const router = createBrowserRouter([
       {
         path: "/profile",
         element: <ProfilePage />,
+      },
+      {
+        path: "/devlog",
+        element: <DevLogPage />,
       },
       {
         path: "/decks",

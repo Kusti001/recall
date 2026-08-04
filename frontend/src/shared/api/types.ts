@@ -76,3 +76,10 @@ export interface UpdateCardData {
   back: string
   backDescription: string
 }
+
+export interface FeedbackItem {
+  id: number
+  user_id: number
+  message: string
+  created_at: string
+}
