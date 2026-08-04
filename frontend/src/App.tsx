@@ -1,26 +1,33 @@
-import { createBrowserRouter, RouterProvider } from "react-router-dom"
+import { createBrowserRouter, RouterProvider, Outlet } from "react-router-dom"
+import { Toaster } from "@/components/ui/sonner"
+import { AuthProvider } from "@/shared/auth/AuthProvider"
+
+import { Header } from "@/components/Header/Header"
+
 import { MainPage } from "./pages/MainPage"
 import { AuthPage } from "./pages/AuthPage"
 import { AuthCallbackPage } from "./pages/AuthCallbackPage"
 import { DecksPage } from "./pages/DecksPage"
 import { DeckDetailPage } from "./pages/DeckDetailPage"
 import { ReviewSessionPage } from "@/pages/ReviewSessionPage"
-import { Header } from "@/components/Header/Header"
-import { Outlet } from "react-router-dom"
 import { HowThisWorksPage } from "./pages/HowThisWorksPage"
 import { ReviewMenuPage } from "@/pages/ReviewMenuPage"
 import { ProfilePage } from "@/pages/ProfilePage"
 
 function Layout() {
   return (
-    <div className="flex h-screen flex-col overflow-hidden">
-      <div className="shrink-0">
-        <Header />
+    <AuthProvider>
+      <div className="flex h-screen flex-col overflow-hidden">
+        <div className="shrink-0">
+          <Header />
+        </div>
+
+        <div className="min-h-0 flex-1 overflow-y-auto">
+          <Outlet />
+        </div>
       </div>
-      <div className="min-h-0 flex-1 overflow-y-auto">
-        <Outlet />
-      </div>
-    </div>
+      <Toaster />
+    </AuthProvider>
   )
 }
 
@@ -28,17 +35,50 @@ const router = createBrowserRouter([
   {
     element: <Layout />,
     children: [
-      { path: "/", element: <MainPage /> },
-      { path: "/how", element: <HowThisWorksPage /> },
-      { path: "/login", element: <AuthPage /> },
-      { path: "/register", element: <AuthPage /> },
-      { path: "/profile", element: <ProfilePage /> },
-      { path: "/decks", element: <DecksPage /> },
-      { path: "/decks/:id", element: <DeckDetailPage /> },
-      { path: "/review/", element: <ReviewMenuPage /> },
-      { path: "/review/deck/:id", element: <ReviewSessionPage /> },
-      { path: "/review/all", element: <ReviewSessionPage /> },
-      { path: "/auth/:provider/callback", element: <AuthCallbackPage /> },
+      {
+        path: "/",
+        element: <MainPage />,
+      },
+      {
+        path: "/how",
+        element: <HowThisWorksPage />,
+      },
+      {
+        path: "/login",
+        element: <AuthPage />,
+      },
+      {
+        path: "/register",
+        element: <AuthPage />,
+      },
+      {
+        path: "/profile",
+        element: <ProfilePage />,
+      },
+      {
+        path: "/decks",
+        element: <DecksPage />,
+      },
+      {
+        path: "/decks/:id",
+        element: <DeckDetailPage />,
+      },
+      {
+        path: "/review",
+        element: <ReviewMenuPage />,
+      },
+      {
+        path: "/review/deck/:id",
+        element: <ReviewSessionPage />,
+      },
+      {
+        path: "/review/all",
+        element: <ReviewSessionPage />,
+      },
+      {
+        path: "/auth/:provider/callback",
+        element: <AuthCallbackPage />,
+      },
     ],
   },
 ])
