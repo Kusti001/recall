@@ -1,3 +1,4 @@
+from this import d
 import uuid
 
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -17,7 +18,9 @@ class CardService:
             user_id=user_id,
             deck_id=data.deck_id,
             front=data.front,
+            front_description=data.front_description,
             back=data.back,
+            back_description=data.back_description,
         )
         return card
 
@@ -30,6 +33,10 @@ class CardService:
 
         if data.deck_id is not None:
             card.deck_id = data.deck_id
+        if data.front_description is not None:
+            card.front_description = data.front_description
+        if data.back_description is not None:
+            card.back_description = data.back_description
         if data.front is not None:
             card.front = data.front
         if data.back is not None:

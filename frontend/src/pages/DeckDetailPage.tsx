@@ -10,14 +10,23 @@ import {
   updateDeck,
   deleteDeck,
 } from "@/shared/api/api"
-import type { DeckStats, CardListItem, CardDetail } from "@/shared/api/types"
+import type {
+  DeckStats,
+  CardListItem,
+  CardDetail,
+  UpdateCardData,
+} from "@/shared/api/types"
 import { DeckHeader } from "@/components/DeckDetailPage/DeckHeader"
 import { CardsTable } from "@/components/DeckDetailPage/CardsTable"
+import { CardsGrid } from "@/components/DeckDetailPage/CardsGrid"
 import { CardPreview } from "@/components/DeckDetailPage/CardPreview"
 import { CreateCardDialog } from "@/components/DeckDetailPage/CreateCardDialog"
 import { EditCardDialog } from "@/components/DeckDetailPage/EditCardDialog"
 import { EditDeckDialog } from "@/components/DeckDetailPage/EditDeckDialog"
 import { DeleteDeckDialog } from "@/components/DeckDetailPage/DeleteDeckDialog"
+import { Button } from "@/components/ui/button"
+
+type ViewMode = "list" | "grid"
 
 export function DeckDetailPage() {
   const { id } = useParams()
@@ -30,6 +39,7 @@ export function DeckDetailPage() {
   const [editOpen, setEditOpen] = useState(false)
   const [editDeckOpen, setEditDeckOpen] = useState(false)
   const [deleteDeckOpen, setDeleteDeckOpen] = useState(false)
+  const [viewMode, setViewMode] = useState<ViewMode>("grid")
 
   async function handleSelectCard(card: CardListItem) {
     setSelectedCard(card)
@@ -55,23 +65,55 @@ export function DeckDetailPage() {
     loadDeck()
   }, [id])
 
-  async function handleCreateCard(front: string, back: string) {
-    await createCard(front, back, Number(id))
+  async function handleCreateCard(
+    front: string,
+    back: string,
+    frontDescription: string,
+    backDescription: string
+  ) {
+    await createCard({
+      deck_id: Number(id),
+      front,
+      back,
+      front_description: frontDescription,
+      back_description: backDescription,
+    })
     const response = await getDeckCards(Number(id))
     setCards(response.cards)
     setCreateOpen(false)
   }
 
-  async function handleUpdateCard(cardId: number, front: string, back: string) {
-    const updated = await updateCard(cardId, front, back)
-    setCardDetails((prev) => ({ ...prev, [updated.id]: updated }))
+  async function handleUpdateCard({
+    id,
+    front,
+    frontDescription,
+    back,
+    backDescription,
+  }: UpdateCardData) {
+    const updated = await updateCard({
+      card_id: id,
+      front,
+      back,
+      front_description: frontDescription,
+      back_description: backDescription,
+    })
+
+    setCardDetails((prev) => ({
+      ...prev,
+      [updated.id]: updated,
+    }))
+
     setCards((prev) =>
       prev.map((c) =>
         c.id === updated.id
-          ? { ...c, front: updated.front, back: updated.back }
+          ? {
+              ...c,
+              ...updated,
+            }
           : c
       )
     )
+
     return updated
   }
 
@@ -115,12 +157,37 @@ export function DeckDetailPage() {
         onEditDeck={() => setEditDeckOpen(true)}
       />
 
-      <section className="mt-8 grid items-start gap-6 lg:grid-cols-[1fr_340px]">
-        <CardsTable
-          cards={cards}
-          selectedCardId={selectedCard?.id ?? null}
-          onSelectCard={handleSelectCard}
-        />
+      <div className="mt-4 flex justify-end gap-2">
+        <Button
+          variant={viewMode === "grid" ? "default" : "outline"}
+          size="sm"
+          onClick={() => setViewMode("grid")}
+        >
+          Сетка
+        </Button>
+        <Button
+          variant={viewMode === "list" ? "default" : "outline"}
+          size="sm"
+          onClick={() => setViewMode("list")}
+        >
+          Список
+        </Button>
+      </div>
+
+      <section className="mt-4 grid items-start gap-6 lg:grid-cols-[1fr_340px]">
+        {viewMode === "list" ? (
+          <CardsTable
+            cards={cards}
+            selectedCardId={selectedCard?.id ?? null}
+            onSelectCard={handleSelectCard}
+          />
+        ) : (
+          <CardsGrid
+            cards={cards}
+            selectedCardId={selectedCard?.id ?? null}
+            onSelectCard={handleSelectCard}
+          />
+        )}
         {selectedDetail && (
           <CardPreview
             card={selectedDetail}

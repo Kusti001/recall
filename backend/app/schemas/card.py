@@ -6,13 +6,17 @@ from pydantic import BaseModel
 class CardCreate(BaseModel):
     deck_id: int | None = None
     front: str
+    front_description: str | None = None
     back: str
+    back_description: str | None = None
 
 
 class CardRead(BaseModel):
     id: int
     front: str
+    front_description: str | None = None
     back: str
+    back_description: str | None = None
     next_review: datetime
     interval: int
     ease_factor: float
@@ -24,13 +28,17 @@ class CardRead(BaseModel):
 class CardUpdate(BaseModel):
     front: str | None = None
     back: str | None = None
+    front_description: str | None = None
+    back_description: str | None = None
     deck_id: int | None = None
 
 
 class CardListItem(BaseModel):
     id: int
     front: str
+    front_description: str | None = None
     back: str
+    back_description: str | None = None
     interval: int
     status: str
     reviews: int
@@ -41,7 +49,9 @@ class CardListItem(BaseModel):
         return cls(
             id=card.id,
             front=card.front,
+            front_description=card.front_description,
             back=card.back,
+            back_description=card.back_description,
             interval=card.interval,
             reviews=card.reviews_count,
             # TODO: add MORE STATUSES: due, mastered, new, learning, review
@@ -59,7 +69,9 @@ class DeckCardsResponse(BaseModel):
 class CardReviewList(BaseModel):
     id: int
     front: str
+    front_description: str | None = None
     back: str
+    back_description: str | None = None
     model_config = {"from_attributes": True}
 
 

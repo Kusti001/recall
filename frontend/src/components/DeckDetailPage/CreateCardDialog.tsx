@@ -13,7 +13,12 @@ import { Button } from "@/components/ui/button"
 interface CreateCardDialogProps {
   open: boolean
   onOpenChange: (open: boolean) => void
-  onCreate: (front: string, back: string) => Promise<void>
+  onCreate: (
+    front: string,
+    back: string,
+    frontDescription: string,
+    backDescription: string
+  ) => Promise<void>
 }
 
 export function CreateCardDialog({
@@ -23,11 +28,15 @@ export function CreateCardDialog({
 }: CreateCardDialogProps) {
   const [front, setFront] = useState("")
   const [back, setBack] = useState("")
+  const [frontDescription, setFrontDescription] = useState("")
+  const [backDescription, setBackDescription] = useState("")
 
   async function handleCreate() {
-    await onCreate(front, back)
+    await onCreate(front, back, frontDescription, backDescription)
     setFront("")
     setBack("")
+    setFrontDescription("")
+    setBackDescription("")
   }
 
   return (
@@ -36,6 +45,7 @@ export function CreateCardDialog({
         <DialogHeader>
           <DialogTitle>Новая карточка</DialogTitle>
         </DialogHeader>
+
         <div className="space-y-4">
           <div>
             <label className="text-sm text-muted-foreground">
@@ -48,6 +58,19 @@ export function CreateCardDialog({
               onChange={(e) => setFront(e.target.value)}
             />
           </div>
+
+          <div>
+            <label className="text-sm text-muted-foreground">
+              Описание лицевой стороны (необязательно)
+            </label>
+            <textarea
+              className="mt-1 min-h-16 w-full rounded-md border px-3 py-2 text-sm"
+              placeholder="Например: контекст или подсказка"
+              value={frontDescription}
+              onChange={(e) => setFrontDescription(e.target.value)}
+            />
+          </div>
+
           <div>
             <label className="text-sm text-muted-foreground">
               Обратная сторона
@@ -59,7 +82,20 @@ export function CreateCardDialog({
               onChange={(e) => setBack(e.target.value)}
             />
           </div>
+
+          <div>
+            <label className="text-sm text-muted-foreground">
+              Описание обратной стороны (необязательно)
+            </label>
+            <textarea
+              className="mt-1 min-h-16 w-full rounded-md border px-3 py-2 text-sm"
+              placeholder="Например: пример использования"
+              value={backDescription}
+              onChange={(e) => setBackDescription(e.target.value)}
+            />
+          </div>
         </div>
+
         <DialogFooter>
           <Button onClick={handleCreate} disabled={!front || !back}>
             Создать

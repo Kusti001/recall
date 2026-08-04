@@ -15,7 +15,9 @@ export interface DecksResponse {
 export interface CardListItem {
   id: number
   front: string
+  front_description: string
   back: string
+  back_description: string
   interval: number
   status: string
   reviews: number
@@ -29,7 +31,9 @@ export interface DeckCardsResponse {
 export interface ReviewCard {
   id: number
   front: string
+  front_description: string
   back: string
+  back_description: string
 }
 
 export interface ReviewCardsResponse {
@@ -40,7 +44,9 @@ export interface ReviewCardsResponse {
 export interface CardDetail {
   id: number
   front: string
+  front_description: string
   back: string
+  back_description: string
   next_review: string
   interval: number
   ease_factor: number
@@ -61,4 +67,12 @@ export interface ProfileStats {
   due_today: number
   average_interval: number
   heatmap: HeatmapDay[]
+}
+
+export interface UpdateCardData {
+  id: number
+  front: string
+  frontDescription: string
+  back: string
+  backDescription: string
 }

@@ -125,9 +125,15 @@ export function ReviewSessionPage() {
       </div>
 
       <div className="mx-auto w-full max-w-3xl">
-        {showAnswer && (
+        <div
+          className={`transition-all duration-200 ${
+            showAnswer
+              ? "translate-y-0 opacity-100"
+              : "pointer-events-none translate-y-2 opacity-0"
+          }`}
+        >
           <GradeBar onGrade={triggerGrade} activeGrade={pressedGrade} />
-        )}
+        </div>
       </div>
     </main>
   )

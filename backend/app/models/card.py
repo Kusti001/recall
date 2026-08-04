@@ -22,7 +22,10 @@ class Card(Base):
     )
 
     front: Mapped[str] = mapped_column()
+    front_description: Mapped[str | None] = mapped_column(nullable=True)
+
     back: Mapped[str] = mapped_column()
+    back_description: Mapped[str | None] = mapped_column(nullable=True)
 
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),

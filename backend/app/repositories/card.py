@@ -15,9 +15,18 @@ class CardRepository:
         user_id: UUID,
         deck_id: int | None,
         front: str,
+        front_description: str | None,
         back: str,
+        back_description: str | None,
     ) -> Card:
-        card = Card(user_id=user_id, deck_id=deck_id, front=front, back=back)
+        card = Card(
+            user_id=user_id,
+            deck_id=deck_id,
+            front=front,
+            front_description=front_description,
+            back=back,
+            back_description=back_description,
+        )
         self.session.add(card)
         await self.session.flush()
         return card
@@ -55,6 +64,10 @@ class CardRepository:
         return result.scalar_one()
 
     async def get_average_interval(self, user_id: UUID) -> float:
-        query = select(func.avg(Card.interval)).where(Card.user_id == user_id).where(Card.reviews_count > 0)
+        query = (
+            select(func.avg(Card.interval))
+            .where(Card.user_id == user_id)
+            .where(Card.reviews_count > 0)
+        )
         result = await self.session.execute(query)
         return result.scalar_one() or 0.0
