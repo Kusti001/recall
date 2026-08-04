@@ -41,7 +41,10 @@ class ProfileService:
         heatmap_rows = await self.reviews.get_review_heatmap(user.id)
 
         result = await self.reviews.get_retention_30d(user.id)
-        retention_30d = round(result.successful / result.total * 100, 1)
+        if result.total == 0:
+            retention_30d = 0.0
+        else:
+            retention_30d = round(result.successful / result.total * 100, 1)
 
         return ProfileStats(
             display_name=user.email.split("@")[0],
