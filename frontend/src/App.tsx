@@ -6,7 +6,6 @@ import { Header } from "@/components/Header/Header"
 
 import { MainPage } from "./pages/MainPage"
 import { AuthPage } from "./pages/AuthPage"
-import { AuthCallbackPage } from "./pages/AuthCallbackPage"
 import { DecksPage } from "./pages/DecksPage"
 import { DeckDetailPage } from "./pages/DeckDetailPage"
 import { ReviewSessionPage } from "@/pages/ReviewSessionPage"
@@ -88,10 +87,6 @@ const router = createBrowserRouter([
       {
         path: "/review/all",
         element: <ReviewSessionPage />,
-      },
-      {
-        path: "/auth/:provider/callback",
-        element: <AuthCallbackPage />,
       },
     ],
   },

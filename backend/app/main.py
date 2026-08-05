@@ -10,13 +10,11 @@ from .db.init import create_tables, reset_tables
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     await create_tables()
-    #await reset_tables()
+    # await reset_tables()
     yield
 
 
 app = FastAPI(lifespan=lifespan)
-
-app.include_router(api_router)
 
 origins = [
     "http://127.0.0.1:80",
@@ -34,3 +32,5 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+app.include_router(api_router)

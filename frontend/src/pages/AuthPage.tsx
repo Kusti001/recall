@@ -3,13 +3,8 @@ import { useNavigate } from "react-router-dom"
 import { useLocation } from "react-router-dom"
 import { Button } from "@/components/ui/button"
 import { Link } from "react-router-dom"
-import {
-  getOAuthUrl,
-  loginWithEmail,
-  registerWithEmail,
-  oauthProviders,
-  type OAuthProvider,
-} from "@/shared/api/api"
+import axios from "axios"
+import { loginWithEmail, registerWithEmail } from "@/shared/api/api"
 
 import { useAuth } from "@/shared/auth/useAuth"
 
@@ -24,23 +19,8 @@ export function AuthPage() {
   const [password, setPassword] = useState("")
 
   const [loading, setLoading] = useState(false)
-  const [oauthLoading, setOauthLoading] = useState<OAuthProvider | null>(null)
 
   const [error, setError] = useState<string | null>(null)
-
-  async function handleOAuthLogin(provider: OAuthProvider) {
-    try {
-      setOauthLoading(provider)
-
-      const url = await getOAuthUrl(provider)
-
-      window.location.href = url
-    } catch {
-      setError("Не удалось подключиться к OAuth")
-    } finally {
-      setOauthLoading(null)
-    }
-  }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -60,8 +40,8 @@ export function AuthPage() {
       navigate("/", {
         replace: true,
       })
-    } catch (err: any) {
-      if (err.response?.status === 400) {
+    } catch (err: unknown) {
+      if (axios.isAxiosError(err) && err.response?.status === 400) {
         setError(
           isRegister
             ? "Пользователь с таким email уже существует"
@@ -99,7 +79,6 @@ export function AuthPage() {
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label className="text-sm">Email</label>
-
             <input
               type="email"
               required
@@ -112,7 +91,6 @@ export function AuthPage() {
 
           <div>
             <label className="text-sm">Пароль</label>
-
             <input
               type="password"
               required
@@ -134,26 +112,8 @@ export function AuthPage() {
 
         <div className="my-6 flex items-center gap-3">
           <div className="h-px flex-1 bg-border" />
-
           <span className="text-xs text-muted-foreground">или</span>
-
           <div className="h-px flex-1 bg-border" />
-        </div>
-
-        <div className="space-y-3">
-          {oauthProviders.map((provider) => (
-            <Button
-              key={provider.id}
-              variant="outline"
-              className="w-full"
-              disabled={oauthLoading !== null}
-              onClick={() => handleOAuthLogin(provider.id)}
-            >
-              {oauthLoading === provider.id
-                ? "Подключение..."
-                : `Продолжить через ${provider.label}`}
-            </Button>
-          ))}
         </div>
 
         {isRegister ? (

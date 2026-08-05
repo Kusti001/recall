@@ -1,22 +1,8 @@
 import { apiClient } from "./client"
 
-export type OAuthProvider = "google"
-
-export interface OAuthProviderConfig {
-  id: OAuthProvider
-  label: string
-}
-
-export const oauthProviders: OAuthProviderConfig[] = [
-  { id: "google", label: "Google" },
-]
-
 export interface User {
   id: string
   email: string
-  is_active: boolean
-  is_superuser?: boolean
-  is_verified?: boolean
 }
 
 // --- Auth API ---
@@ -24,7 +10,6 @@ export async function loginWithEmail(username: string, password: string) {
   const params = new URLSearchParams()
   params.append("username", username)
   params.append("password", password)
-
   const res = await apiClient.post<{ access_token: string }>(
     "/v1/auth/jwt/login",
     params,
@@ -44,31 +29,20 @@ export async function registerWithEmail(email: string, password: string) {
 }
 
 export async function logout() {
-    await apiClient.post("/v1/auth/jwt/logout")
-}
-
-export async function getOAuthUrl(provider: OAuthProvider): Promise<string> {
-  const res = await apiClient.get<{ authorization_url: string }>(
-    `/v1/auth/${provider}/authorize`
-  )
-  return res.data.authorization_url
-}
-
-export async function exchangeOAuthCode(
-  provider: OAuthProvider,
-  code: string,
-  state: string
-): Promise<string> {
-  const res = await apiClient.get<{ access_token: string }>(
-    `/v1/auth/${provider}/callback`,
-    {
-      params: { code, state },
-    }
-  )
-  return res.data.access_token
+  await apiClient.post("/v1/auth/jwt/logout")
 }
 
 export async function getCurrentUser(): Promise<User> {
-  const res = await apiClient.get<User>("/v1/auth/me")
+  const res = await apiClient.get<User>("/v1/auth/users/me")
+  return res.data
+}
+
+export async function updateEmail(email: string): Promise<User> {
+  const res = await apiClient.patch<User>("/v1/auth/users/me", { email })
+  return res.data
+}
+
+export async function updatePassword(password: string): Promise<User> {
+  const res = await apiClient.patch<User>("/v1/auth/users/me", { password })
   return res.data
 }
