@@ -24,6 +24,23 @@ export function ReviewMenuPage() {
     return <div>Loading...</div>
   }
 
+  // Если нечего повторять
+  if (data.total_due === 0) {
+    return (
+      <main className="flex h-screen items-center justify-center">
+        <div className="text-center">
+          <h1 className="mb-4 font-serif text-4xl">Нечего повторять!</h1>
+          <p className="mb-8 text-muted-foreground">
+            Все карточки повторены. Добавьте новые карточки, чтобы продолжить обучение.
+          </p>
+          <Link to="/decks">
+            <Button className="px-8">Добавить новые карточки</Button>
+          </Link>
+        </div>
+      </main>
+    )
+  }
+
   return (
     <main className="mx-auto max-w-5xl px-8 py-12">
       <div className="mb-8">
