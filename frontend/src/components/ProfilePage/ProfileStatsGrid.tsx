@@ -20,7 +20,7 @@ export function ProfileStatsGrid({ stats }: Props) {
     },
     {
       label: "Средний интервал",
-      value: stats.average_interval,
+      value: `${stats.average_interval} д`,
     },
   ]
 

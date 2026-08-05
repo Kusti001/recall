@@ -53,7 +53,7 @@ class ProfileService:
             current_streak=current_streak,
             cards_studied=cards_studied,
             due_today=due_today,
-            average_interval=average_interval,
+            average_interval=round(average_interval,1),
             heatmap=[
                 HeatmapDay(date=row._mapping["date"], count=row._mapping["count"])
                 for row in heatmap_rows
