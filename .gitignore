@@ -1,5 +1,6 @@
 fastapi-project-template.code-workspace
-
+# macOS
+.DS_Store
 *.env
 .vscode/settings.json
 __pycache__/
