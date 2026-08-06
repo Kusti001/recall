@@ -1,0 +1,11 @@
+{
+  "sessionComplete": "Session complete",
+  "redirecting": "Returning to review menu...",
+  "nothingToReview": "Nothing to review!",
+  "allCardsReviewed": "All cards reviewed. Add new cards to keep learning.",
+  "addNewCards": "Add new cards",
+  "loading": "Loading...",
+  "progress": "{{current}} / {{total}}",
+  "sessionFinished": "Session finished!",
+  "returnToReview": "Returning to review menu now..."
+}

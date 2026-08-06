@@ -1,8 +1,10 @@
 import { Link, useNavigate } from "react-router-dom"
 import { buttonVariants } from "@/components/ui/button"
 import { useAuth } from "@/shared/auth/useAuth"
+import { useTranslation } from "react-i18next"
 
 export function HeaderActions() {
+  const { t } = useTranslation()
   const { token, logout } = useAuth()
   const navigate = useNavigate()
 
@@ -15,7 +17,7 @@ export function HeaderActions() {
     return (
       <div className="flex items-center gap-3">
         <Link to="/profile" className={buttonVariants()}>
-          Профиль
+          {t("nav.profile")}
         </Link>
 
         <button
@@ -24,7 +26,7 @@ export function HeaderActions() {
             variant: "outline",
           })}
         >
-          Выйти
+          {t("nav.logout")}
         </button>
       </div>
     )
@@ -38,11 +40,11 @@ export function HeaderActions() {
           variant: "outline",
         })}
       >
-        Войти
+        {t("nav.join")}
       </Link>
 
       <Link to="/register" className={buttonVariants()}>
-        Начать
+        {t("nav.start")}
       </Link>
     </div>
   )

@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react"
-
+import { useTranslation } from "react-i18next"
 interface HeatmapDay {
   date: string
   count: number
@@ -18,14 +18,16 @@ function getLevel(count: number) {
   return "bg-emerald-400"
 }
 
-function formatDate(iso: string) {
-  return new Date(iso).toLocaleDateString("ru-RU", {
+function formatDate(date: string, locale: string) {
+  return new Date(date).toLocaleDateString(locale, {
     day: "numeric",
     month: "long",
+    year: "numeric",
   })
 }
 
 export function ActivityHeatmap({ data }: Props) {
+  const { t, i18n } = useTranslation("profile")
   const [hovered, setHovered] = useState<{
     day: HeatmapDay
     x: number
@@ -37,11 +39,9 @@ export function ActivityHeatmap({ data }: Props) {
 
     const today = new Date()
 
-    // 26 недель ≈ 182 дня
     const start = new Date(today)
     start.setDate(today.getDate() - 181)
 
-    // двигаем начало к воскресенью
     start.setDate(start.getDate() - start.getDay())
 
     const days: HeatmapDay[] = []
@@ -71,13 +71,14 @@ export function ActivityHeatmap({ data }: Props) {
   return (
     <div className="relative rounded-xl border p-5">
       <div className="mb-4 flex items-center justify-between">
-        <h2 className="font-semibold">Активность</h2>
+        <h2 className="font-semibold">{t("activity.title")}</h2>
 
-        <span className="text-sm text-muted-foreground">182 дня</span>
+        <span className="text-sm text-muted-foreground">
+          {t("activity.period", { days: 182 })}
+        </span>
       </div>
 
       <div className="flex gap-1">
-        {/* недели */}
         {weeks.map((week, weekIndex) => (
           <div key={weekIndex} className="flex flex-col gap-1">
             {week.map((day) => (
@@ -105,7 +106,7 @@ export function ActivityHeatmap({ data }: Props) {
       </div>
 
       <div className="mt-4 flex items-center gap-1.5 text-[10px] text-muted-foreground">
-        <span>меньше</span>
+        <span>{t("activity.less")}</span>
 
         <div className="h-3 w-3 rounded-xs bg-muted" />
         <div className="h-3 w-3 rounded-xs bg-emerald-950" />
@@ -113,7 +114,7 @@ export function ActivityHeatmap({ data }: Props) {
         <div className="h-3 w-3 rounded-xs bg-emerald-600" />
         <div className="h-3 w-3 rounded-xs bg-emerald-400" />
 
-        <span>больше</span>
+        <span>{t("activity.more")}</span>
       </div>
 
       {hovered && (
@@ -124,12 +125,16 @@ export function ActivityHeatmap({ data }: Props) {
             top: hovered.y - 6,
           }}
         >
-          <div className="font-medium">{formatDate(hovered.day.date)}</div>
+          <div className="font-medium">
+            {formatDate(hovered.day.date, i18n.language)}
+          </div>
 
           <div className="text-muted-foreground">
             {hovered.day.count === 0
-              ? "Нет повторений"
-              : `${hovered.day.count} повторений`}
+              ? t("activity.no_reviews")
+              : t("activity.reviews", {
+                  count: hovered.day.count,
+                })}
           </div>
         </div>
       )}

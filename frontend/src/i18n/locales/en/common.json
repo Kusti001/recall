@@ -1,0 +1,18 @@
+{
+  "nav": {
+    "howItWorks": "How it works",
+    "decks": "Decks",
+    "review": "Review",
+    "profile": "Profile",
+    "logout": "Log out",
+    "start": "Start",
+    "join": "Join"
+  },
+  "actions": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "feedback": "Feedback"
+  }
+}

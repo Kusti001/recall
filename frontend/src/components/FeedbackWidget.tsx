@@ -8,8 +8,10 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog"
 import { submitFeedback } from "@/shared/api/feedback"
+import { useTranslation } from "react-i18next"
 
 export function FeedbackWidget() {
+  const {t} = useTranslation()
   const [open, setOpen] = useState(false)
   const [message, setMessage] = useState("")
   const [sent, setSent] = useState(false)
@@ -30,7 +32,7 @@ export function FeedbackWidget() {
         onClick={() => setOpen(true)}
         className="fixed right-6 bottom-6 rounded-full border bg-background px-4 py-2 text-sm shadow-lg hover:bg-muted"
       >
-        Обратная связь
+        {t("actions.feedback")}
       </button>
 
       <Dialog open={open} onOpenChange={setOpen}>

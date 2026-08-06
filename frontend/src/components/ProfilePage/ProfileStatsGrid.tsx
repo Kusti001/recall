@@ -1,26 +1,27 @@
 import type { ProfileStats } from "@/shared/api/types"
-
+import { useTranslation } from "react-i18next"
 interface Props {
   stats: ProfileStats
 }
 
 export function ProfileStatsGrid({ stats }: Props) {
+  const { t } = useTranslation("profile")
   const items = [
     {
-      label: "Карточек на изучении",
+      label: t("stats.cards_studied"),
       value: stats.cards_studied,
     },
     {
-      label: "Удержание за 30 дней",
-      value: `${stats.retention_30d}%`,
+      label: t("stats.retention_30d"),
+      value: t("common.percent", { value: stats.retention_30d }),
     },
     {
-      label: "Сегодня к повторению",
+      label: t("stats.due_today"),
       value: stats.due_today,
     },
     {
-      label: "Средний интервал",
-      value: `${stats.average_interval} д`,
+      label: t("stats.average_interval"),
+      value: t("common.days_short", { value: stats.average_interval }),
     },
   ]
 

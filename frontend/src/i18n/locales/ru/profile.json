@@ -1,0 +1,24 @@
+{
+  "change_email": "Изменить email",
+  "change_password": "Изменить пароль",
+  "streak_label": "Дней подряд: {{count}}",
+  "member_since": "на Recall с {{date}}",
+  "stats": {
+    "cards_studied": "Карточек на изучении",
+    "retention_30d": "Удержание за 30 дней",
+    "due_today": "Сегодня к повторению",
+    "average_interval": "Средний интервал"
+  },
+  "common": {
+    "percent": "{{value}}%",
+    "days_short": "{{value}} д"
+  },
+  "activity": {
+    "title": "Активность",
+    "period": "{{days}} дней",
+    "less": "меньше",
+    "more": "больше",
+    "no_reviews": "Нет повторений",
+    "reviews": "{{count}} повторений"
+  }
+}

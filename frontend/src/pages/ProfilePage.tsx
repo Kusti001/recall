@@ -10,8 +10,10 @@ import { ActivityHeatmap } from "@/components/ProfilePage/ActivityHeatmap"
 import { Button } from "@/components/ui/button"
 import { ChangeEmailDialog } from "@/components/ProfilePage/ChangeEmailDialog"
 import { ChangePasswordDialog } from "@/components/ProfilePage/ChangePasswordDialog"
+import { useTranslation } from "react-i18next"
 
 export function ProfilePage() {
+  const { t } = useTranslation("profile")
   const [profileStats, setProfileStats] = useState<ProfileStats | null>(null)
   const [user, setUser] = useState<User | null>(null)
   const [emailOpen, setEmailOpen] = useState(false)
@@ -44,10 +46,14 @@ export function ProfilePage() {
 
       <div className="flex gap-2">
         <Button size="sm" variant="outline" onClick={() => setEmailOpen(true)}>
-          Изменить email
+          {t("change_email")}
         </Button>
-        <Button size="sm" variant="outline" onClick={() => setPasswordOpen(true)}>
-          Изменить пароль
+        <Button
+          size="sm"
+          variant="outline"
+          onClick={() => setPasswordOpen(true)}
+        >
+          {t("change_password")}
         </Button>
       </div>
 

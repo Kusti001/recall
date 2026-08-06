@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react"
 import { useParams, useNavigate } from "react-router-dom"
+import { useTranslation } from "react-i18next"
 import { GradeBar } from "@/components/ReviewSessionPage/GradeBar"
 import { ReviewCard as ReviewCardComponent } from "@/components/ReviewSessionPage/ReviewCard"
 import { getReviewCards, reviewCard } from "@/shared/api/api"
@@ -7,6 +8,7 @@ import type { ReviewCard } from "@/shared/api/api"
 
 function SessionComplete() {
   const navigate = useNavigate()
+  const { t } = useTranslation("review")
   const [countdown, setCountdown] = useState(3)
 
   useEffect(() => {
@@ -21,9 +23,9 @@ function SessionComplete() {
   return (
     <main className="flex h-full flex-col items-center justify-center gap-4 px-8">
       <div className="animate-bounce text-6xl">🎉</div>
-      <p className="text-lg font-medium">Сессия завершена</p>
+      <p className="text-lg font-medium">{t("sessionFinished")}</p>
       <p className="text-sm text-muted-foreground">
-        Возвращаемся через {countdown}...
+        {t("returnToReview")}
       </p>
     </main>
   )
@@ -32,6 +34,7 @@ function SessionComplete() {
 export function ReviewSessionPage() {
   const { id } = useParams()
   const navigate = useNavigate()
+  const { t } = useTranslation("review")
   const [cards, setCards] = useState<ReviewCard[]>([])
   const [current, setCurrent] = useState(0)
   const [showAnswer, setShowAnswer] = useState(false)
@@ -108,7 +111,7 @@ export function ReviewSessionPage() {
   if (loading || cards.length === 0) {
     return (
       <main className="flex h-full items-center justify-center px-8">
-        <p className="text-sm text-muted-foreground">Загрузка...</p>
+        <p className="text-sm text-muted-foreground">{t("loading")}</p>
       </main>
     )
   }
