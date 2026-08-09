@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button"
 import { DeckCard } from "./DeckCard"
 
 import type { DeckStats } from "@/shared/api/api"
-
+import { useTranslation } from "react-i18next"
 
 interface Props {
   decks: DeckStats[]
@@ -14,7 +14,7 @@ export function DeckGrid({
   decks,
   onCreate,
 }: Props) {
-
+const { t } = useTranslation("decks")
   return (
     <section
       className="
@@ -50,7 +50,7 @@ export function DeckGrid({
           +
         </span>
 
-        Создать колоду
+        {t("create_deck")}
       </Button>
 
     </section>

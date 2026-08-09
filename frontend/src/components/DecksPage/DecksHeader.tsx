@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button"
+import { useTranslation } from "react-i18next"
 
 
 interface Props {
@@ -13,22 +14,23 @@ export function DecksHeader({
   totalDue,
   onCreate,
 }: Props) {
+  const { t } = useTranslation("decks")
   return (
     <div className="flex items-end justify-between">
 
       <div>
         <h1 className="font-serif text-4xl">
-          Колоды
+          {t("decks")}
         </h1>
 
         <p className="mt-2 text-muted-foreground">
-          {totalDecks} колод · {totalDue} карточек к повторению сегодня
+          {t("stats", { count: totalDecks, cards: totalDue })}
         </p>
       </div>
 
 
       <Button onClick={onCreate}>
-        + Новая колода
+        {t("create_deck")}
       </Button>
 
     </div>

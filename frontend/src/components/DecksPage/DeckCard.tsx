@@ -1,9 +1,9 @@
 import { Link } from "react-router-dom"
 import type { DeckStats } from "@/shared/api/api";
-
+import { useTranslation } from "react-i18next"
 
 export function DeckCard({ deck }: { deck: DeckStats }) {
-
+  const { t } = useTranslation("decks")
   const progress = deck.total_cards
     ? Math.round((deck.mastered_cards / deck.total_cards) * 100)
     : 0;
@@ -21,11 +21,11 @@ export function DeckCard({ deck }: { deck: DeckStats }) {
                 </div>
         {deck.due_cards > 0 ? (
           <span className="rounded-full bg-primary/10 px-3 py-1 font-mono text-xs text-primary">
-            {deck.due_cards} сегодня
+            {t("cards_today", { count: deck.due_cards })}
           </span>
         ) : (
           <span className="rounded-full bg-muted px-3 py-1 font-mono text-xs text-muted-foreground">
-            нет к повторению
+            {t("no_cards_due")}
           </span>
         )}
       </div>
@@ -33,7 +33,7 @@ export function DeckCard({ deck }: { deck: DeckStats }) {
       <div>
         <h3 className="font-medium">{deck.title}</h3>
         <p className="mt-1 font-mono text-xs text-muted-foreground">
-          {deck.total_cards} карточек
+          {t("cards_total", { count: deck.total_cards })}
         </p>
       </div>
 

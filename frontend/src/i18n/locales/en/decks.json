@@ -1,0 +1,8 @@
+{
+    "decks": "Decks",
+    "stats": "{{count}} deck · {{cards}} cards due for review today",
+    "create_deck": "Create Deck",
+    "cards_today": "{{count}} today",
+    "cards_total": "{{count}} cards",
+    "no_cards_due": "no cards due"
+}
