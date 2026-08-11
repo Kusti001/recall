@@ -3,11 +3,13 @@ from uuid import UUID
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.core.constants import MASTERED_INTERVAL_THRESHOLD
 from app.core.exceptions import (
     InvalidOperationError,
     NotFoundError,
     PermissionDeniedError,
 )
+from app.models.card import Status
 from app.repositories import CardRepository, ReviewRepository
 from app.repositories.deck import DeckRepository
 from app.schemas import CardReviewList, DecksResponse, DeckStats, ReviewCardsResponse
@@ -64,26 +66,33 @@ class ReviewService:
         if not 0 <= rating <= 5:
             raise InvalidOperationError("Rating must be between 0 and 5")
 
+        was_new = card.status == Status.NEW
+        card.total_reviews += 1
+
         if rating >= 3:
-            if card.reviews_count == 0:
+            if card.success_streak == 0:
                 card.interval = 1
-            elif card.reviews_count == 1:
+            elif card.success_streak == 1:
                 card.interval = 6
             else:
                 card.interval = round(card.interval * card.ease_factor)
-
-            card.reviews_count += 1
+            card.success_streak += 1
         else:
             card.interval = 1
-            card.reviews_count = 0
+            card.success_streak = 0
 
         card.ease_factor = max(
             card.ease_factor + (0.1 - (5 - rating) * (0.08 + (5 - rating) * 0.02)),
             1.3,
         )
 
-        card.next_review = datetime.now(UTC) + timedelta(days=card.interval)
+        if not card.status_override:
+            if was_new:
+                card.status = Status.LEARNING
+            elif card.interval >= MASTERED_INTERVAL_THRESHOLD:
+                card.status = Status.MASTERED
 
+        card.next_review = datetime.now(UTC) + timedelta(days=card.interval)
         await self.reviews.create(
             user_id=user_id,
             card_id=card_id,

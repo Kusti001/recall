@@ -11,6 +11,7 @@ export interface DecksResponse {
   total_decks: number
   total_due: number
 }
+export type CardStatus = "new" | "learning" | "mastered"
 
 export interface CardListItem {
   id: number
@@ -19,8 +20,9 @@ export interface CardListItem {
   back: string
   back_description: string
   interval: number
-  status: string
-  reviews: number
+  status: CardStatus
+  success_streak: number
+  total_reviews: number
 }
 
 export interface DeckCardsResponse {
@@ -47,10 +49,12 @@ export interface CardDetail {
   front_description: string
   back: string
   back_description: string
+  status: CardStatus
   next_review: string
   interval: number
   ease_factor: number
-  reviews_count: number
+  success_streak: number
+  total_reviews: number
 }
 
 export interface HeatmapDay {

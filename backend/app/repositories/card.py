@@ -4,6 +4,7 @@ from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models import Card
+from app.models.card import Status
 
 
 class CardRepository:
@@ -42,6 +43,7 @@ class CardRepository:
             select(Card)
             .where(Card.user_id == user_id)
             .where(Card.next_review <= func.now())
+            .where(Card.status != Status.MASTERED)
             .order_by(Card.next_review)
             .limit(limit)
         )
@@ -67,7 +69,7 @@ class CardRepository:
         query = (
             select(func.avg(Card.interval))
             .where(Card.user_id == user_id)
-            .where(Card.reviews_count > 0)
+            .where(Card.status == Status.LEARNING)
         )
         result = await self.session.execute(query)
         return result.scalar_one() or 0.0

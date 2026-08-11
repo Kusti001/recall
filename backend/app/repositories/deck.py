@@ -5,6 +5,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.sql.expression import func
 
 from app.models import Card, Deck
+from app.models.card import Status
 
 
 class DeckRepository:
@@ -76,8 +77,12 @@ class DeckRepository:
                 Deck.id,
                 Deck.title,
                 func.count(Card.id).label("total_cards"),
-                func.count(case((Card.interval >= 21, 1))).label("mastered_cards"),
-                func.count(case((Card.next_review <= func.now(), 1))).label("due_cards"),
+                func.count(case((Card.status == Status.MASTERED, 1))).label(
+                    "mastered_cards"
+                ),
+                func.count(case((Card.next_review <= func.now(), 1))).label(
+                    "due_cards"
+                ),
             )
             .join(Card, Card.deck_id == Deck.id)
             .where(Deck.user_id == user_id)

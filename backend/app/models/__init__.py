@@ -1,6 +1,7 @@
 from .card import Card
 from .deck import Deck
-from .user import OAuthAccount, User
+from .feedback import Feedback
 from .review import Review
+from .user import OAuthAccount, User
 
-__all__ = ["User", "OAuthAccount", "Deck", "Card", "Review"]
+__all__ = ["Card", "Deck", "Feedback", "OAuthAccount", "Review", "User"]

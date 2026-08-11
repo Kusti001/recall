@@ -1,20 +1,9 @@
-from contextlib import asynccontextmanager
-
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from .api.router import api_router
-from .db.init import create_tables, reset_tables
 
-
-@asynccontextmanager
-async def lifespan(app: FastAPI):
-    await create_tables()
-    # await reset_tables()
-    yield
-
-
-app = FastAPI(lifespan=lifespan)
+app = FastAPI()
 
 origins = [
     "http://127.0.0.1:80",

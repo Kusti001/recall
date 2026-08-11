@@ -75,6 +75,6 @@ class DeckService:
         cards = await self.decks.get_cards_by_deck(deck_id)
 
         return DeckCardsResponse(
-            cards=[CardListItem.from_card(card) for card in cards],
+            cards=[CardListItem.model_validate(card) for card in cards],
             total_cards=len(cards),
         )

@@ -1,6 +1,8 @@
-from datetime import UTC, datetime
+from datetime import datetime
 
 from pydantic import BaseModel
+
+from app.models.card import Status
 
 
 class CardCreate(BaseModel):
@@ -14,13 +16,15 @@ class CardCreate(BaseModel):
 class CardRead(BaseModel):
     id: int
     front: str
+    status: Status
     front_description: str | None = None
     back: str
     back_description: str | None = None
     next_review: datetime
     interval: int
     ease_factor: float
-    reviews_count: int
+    success_streak: int
+    total_reviews: int
 
     model_config = {"from_attributes": True}
 
@@ -40,25 +44,11 @@ class CardListItem(BaseModel):
     back: str
     back_description: str | None = None
     interval: int
-    status: str
-    reviews: int
+    status: Status
+    success_streak: int
+    total_reviews: int
 
-    # TODO: add status field RIGHT in model!!
-    @classmethod
-    def from_card(cls, card):
-        return cls(
-            id=card.id,
-            front=card.front,
-            front_description=card.front_description,
-            back=card.back,
-            back_description=card.back_description,
-            interval=card.interval,
-            reviews=card.reviews_count,
-            # TODO: add MORE STATUSES: due, mastered, new, learning, review
-            status="due"
-            if card.next_review <= datetime.now(UTC)
-            else ("mastered" if card.interval >= 21 else "learning"),
-        )
+    model_config = {"from_attributes": True}
 
 
 class DeckCardsResponse(BaseModel):
@@ -72,6 +62,7 @@ class CardReviewList(BaseModel):
     front_description: str | None = None
     back: str
     back_description: str | None = None
+
     model_config = {"from_attributes": True}
 
 
