@@ -19,7 +19,7 @@ export interface CardListItem {
   front_description: string
   back: string
   back_description: string
-  interval: number
+  next_review: string
   status: CardStatus
   success_streak: number
   total_reviews: number

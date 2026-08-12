@@ -1,10 +1,30 @@
 import type { CardListItem } from "@/shared/api/api"
 import { StatusBadge } from "./StatusBadge"
+import { useTranslation } from "react-i18next"
 
 interface CardsGridProps {
   cards: CardListItem[]
   selectedCardId: number | null
   onSelectCard: (card: CardListItem) => void
+}
+function formatDate(date: string, locale: string) {
+  const value = new Date(date)
+  const now = new Date()
+
+  const isToday = value.toDateString() === now.toDateString()
+
+  if (isToday) {
+    return new Intl.DateTimeFormat(locale, {
+      hour: "2-digit",
+      minute: "2-digit",
+    }).format(value)
+  }
+
+  return new Intl.DateTimeFormat(locale, {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  }).format(value)
 }
 
 export function CardsGrid({
@@ -12,6 +32,7 @@ export function CardsGrid({
   selectedCardId,
   onSelectCard,
 }: CardsGridProps) {
+  const {t, i18n} = useTranslation("deck_detail")
   return (
     <div className="grid auto-rows-fr grid-cols-2 gap-3 lg:grid-cols-3">
       {cards.map((card) => (
@@ -33,7 +54,6 @@ export function CardsGrid({
             <StatusBadge status={card.status} />
           </div>
 
-          {/* Контент */}
           <div className="pr-20">
             <p className="truncate font-medium">{card.front}</p>
             <p className="truncate text-sm text-muted-foreground">
@@ -48,10 +68,9 @@ export function CardsGrid({
             </p>
           </div>
 
-          {/* Статистика */}
           <div className="mt-3 flex justify-between text-xs text-muted-foreground">
-            <span>{card.interval} дней</span>
-            <span>{card.total_reviews} попыток</span>
+            <span>{formatDate(card.next_review, i18n.language)}</span>
+            <span>{card.total_reviews} {t("total_reviews")}</span>
           </div>
         </button>
       ))}

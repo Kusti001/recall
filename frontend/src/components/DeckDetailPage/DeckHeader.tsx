@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button"
 import { Link } from "react-router-dom"
 import { Pencil, Trash2 } from "lucide-react"
-
+import { useTranslation } from "react-i18next"
 interface DeckHeaderProps {
   title: string
   totalCards: number
@@ -21,14 +21,15 @@ export function DeckHeader({
   onDeleteDeck,
   onEditDeck,
 }: DeckHeaderProps) {
+  const { t } = useTranslation("deck_detail")
   return (
     <div className="pb-6">
-      <div className="text-sm text-muted-foreground">Колоды / {title}</div>
+      <div className="text-sm text-muted-foreground">{t("decks")} / {title}</div>
       <div className="mt-4 flex items-end justify-between">
         <div>
           <h1 className="font-serif text-4xl">{title}</h1>
           <p className="mt-2 text-muted-foreground">
-            {totalCards} карточек · {dueCards} к повторению сегодня
+            {t("stats", { cards: totalCards, due: dueCards })}
           </p>
         </div>
 
@@ -36,19 +37,19 @@ export function DeckHeader({
           <div className="flex gap-2">
             <Button variant="outline" size="sm" onClick={onEditDeck}>
               <Pencil className="mr-2 h-4 w-4" />
-              Переименовать
+              {t("rename")}
             </Button>
             <Button variant="outline" size="sm" onClick={onDeleteDeck}>
               <Trash2 className="mr-2 h-4 w-4 text-destructive" />
-              Удалить
+              {t("delete")}
             </Button>
           </div>
           <div className="flex gap-3">
             <Button variant="outline" onClick={onAddCard}>
-              + Добавить карточку
+              {t("add_card")}
             </Button>
             <Link to={`/review/deck/${deckId}`}>
-              <Button>Повторить сейчас</Button>
+              <Button>{t("review")}</Button>
             </Link>
           </div>
         </div>

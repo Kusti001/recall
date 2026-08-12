@@ -1,0 +1,42 @@
+{
+  "decks": "Decks",
+  "stats": "{{cards}} cards · {{due}} due today",
+  "rename": "Rename",
+  "delete": "Delete",
+  "edit": "Edit",
+  "review": "Review",
+  "open_menu": "Open menu",
+  "add_card": "Add card",
+  "view_mode": {
+    "grid": "Grid",
+    "table": "Table"
+  },
+
+  "statuses": {
+    "new": "New",
+    "learning": "Learning",
+    "mastered": "Mastered"
+  },
+  "table": {
+    "front": "Front",
+    "back": "Back",
+    "status": "Status",
+    "next_review": "Next review",
+    "success_streak": "Success streak",
+    "total_reviews": "Total reviews"
+  },
+  "card_preview": "Card preview",
+  "interval": "Interval",
+  "days": "{{count}} d",
+  "next_review": "Next review",
+  "total_reviews": "Total reviews",
+  "ease_factor": "Ease factor",
+  "success_streak": "{{count}} correct in a row",
+
+  "delete_card": {
+    "title": "Delete card?",
+    "description": "The card will be permanently deleted. This action cannot be undone.",
+    "cancel": "Cancel",
+    "confirm": "Delete"
+  }
+}

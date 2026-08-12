@@ -12,7 +12,6 @@ def calculate_streak(review_days: list[date]) -> int:
         return 0
 
     today = datetime.now(tz=UTC).date()
-    # если сегодня ещё не повторяли - стрик считается от вчера
     expected = today if review_days[0] == today else today - timedelta(days=1)
 
     streak = 0
