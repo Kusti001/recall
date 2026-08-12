@@ -43,7 +43,7 @@ class CardListItem(BaseModel):
     front_description: str | None = None
     back: str
     back_description: str | None = None
-    interval: int
+    next_review: datetime
     status: Status
     success_streak: int
     total_reviews: int
