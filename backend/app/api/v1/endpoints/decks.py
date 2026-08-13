@@ -11,6 +11,7 @@ from app.schemas import (
 )
 from app.services import DeckService
 from fastapi import APIRouter, Depends, HTTPException
+from fastapi.responses import Response
 from sqlalchemy.ext.asyncio import AsyncSession
 
 router = APIRouter(prefix="/decks", tags=["v1 / decks"])
@@ -104,6 +105,33 @@ async def get_cards_by_deck(
     try:
         data = await service.get_cards_by_deck(user_id=user.id, deck_id=deck_id)
         return data
+    except NotFoundError as e:
+        await session.rollback()
+        raise HTTPException(status_code=404, detail=str(e))
+    except PermissionDeniedError as e:
+        await session.rollback()
+        raise HTTPException(status_code=403, detail=str(e))
+
+
+@router.get("/{deck_id}/export")
+async def export_deck(
+    deck_id: int,
+    format: str = "json",
+    user: User = Depends(get_current_user),
+    session: AsyncSession = Depends(get_async_session),
+):
+    service = DeckService(session)
+    try:
+        data = await service.export_deck(user_id=user.id, deck_id=deck_id, format=format)
+        json_data = data.model_dump_json(indent=2)
+
+        return Response(
+            content=json_data,
+            media_type="application/json",
+            headers={
+                "Content-Disposition": f'attachment; filename="deck_{deck_id}.json"'
+            },
+        )
     except NotFoundError as e:
         await session.rollback()
         raise HTTPException(status_code=404, detail=str(e))

@@ -10,6 +10,9 @@ from app.schemas import (
     DeckCreate,
     DecksResponse,
     DeckStats,
+    ExportCard,
+    ExportDeckData,
+    ExportDeckResponse,
 )
 
 
@@ -77,4 +80,30 @@ class DeckService:
         return DeckCardsResponse(
             cards=[CardListItem.model_validate(card) for card in cards],
             total_cards=len(cards),
+        )
+
+    async def export_deck(self, user_id: UUID, deck_id: int, format: str):
+        deck = await self.decks.get_by_id(deck_id)
+
+        if not deck:
+            raise NotFoundError("Deck not found")
+
+        if deck.user_id != user_id:
+            raise PermissionDeniedError("Access denied")
+
+        cards = await self.decks.get_cards_by_deck(deck_id)
+
+        return ExportDeckResponse(
+            deck=ExportDeckData(
+                title=deck.title,
+                cards=[
+                    ExportCard(
+                        front=card.front,
+                        front_description=card.front_description,
+                        back=card.back,
+                        back_description=card.back_description,
+                    )
+                    for card in cards
+                ],
+            )
         )
