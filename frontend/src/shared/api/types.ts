@@ -87,3 +87,38 @@ export interface FeedbackItem {
   message: string
   created_at: string
 }
+
+export interface GenerateDeckRequest {
+  prompt: string
+  card_count: number
+}
+
+export interface GeneratedCard {
+  front: string
+  front_description: string | null
+  back: string
+  back_description: string | null
+}
+
+export interface GeneratedDeck {
+  title: string
+  cards: GeneratedCard[]
+}
+
+export interface ExportCard {
+  front: string
+  front_description: string | null
+  back: string
+  back_description: string | null
+}
+
+export interface ExportDeckData {
+  title: string
+  cards: ExportCard[]
+}
+
+export interface ImportDeckRequest {
+  type: "recall"
+  version: 1
+  deck: ExportDeckData
+}

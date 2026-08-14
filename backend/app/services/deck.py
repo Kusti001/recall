@@ -3,6 +3,7 @@ from uuid import UUID
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.exceptions import NotFoundError, PermissionDeniedError
+from app.models import Card, Deck
 from app.repositories import DeckRepository
 from app.schemas import (
     CardListItem,
@@ -107,3 +108,37 @@ class DeckService:
                 ],
             )
         )
+
+    async def import_deck(
+        self,
+        user_id: UUID,
+        deck_data: ExportDeckData,
+    ) -> Deck:
+        deck_data = self.preview_import_deck(deck_data)
+        deck = Deck(
+            user_id=user_id,
+            title=deck_data.title,
+        )
+
+        self.session.add(deck)
+        await self.session.flush()
+
+        for card_data in deck_data.cards:
+            card = Card(
+                user_id=user_id,
+                deck_id=deck.id,
+                front=card_data.front,
+                front_description=card_data.front_description,
+                back=card_data.back,
+                back_description=card_data.back_description,
+            )
+
+            self.session.add(card)
+
+        await self.session.commit()
+        await self.session.refresh(deck)
+
+        return deck
+
+    def preview_import_deck(self, deck_data: ExportDeckData) -> ExportDeckData:
+        return ExportDeckData.model_validate(deck_data)

@@ -8,8 +8,11 @@ from app.schemas import (
     DeckRead,
     DecksResponse,
     DeckStats,
+    GeneratedDeck,
+    GenerateDeckRequest,
+    ImportDeckRequest,
 )
-from app.services import DeckService
+from app.services import AIService, DeckService
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.responses import Response
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -122,7 +125,9 @@ async def export_deck(
 ):
     service = DeckService(session)
     try:
-        data = await service.export_deck(user_id=user.id, deck_id=deck_id, format=format)
+        data = await service.export_deck(
+            user_id=user.id, deck_id=deck_id, format=format
+        )
         json_data = data.model_dump_json(indent=2)
 
         return Response(
@@ -137,4 +142,63 @@ async def export_deck(
         raise HTTPException(status_code=404, detail=str(e))
     except PermissionDeniedError as e:
         await session.rollback()
+        raise HTTPException(status_code=403, detail=str(e))
+
+
+@router.post("/import/preview", response_model=GeneratedDeck)
+async def preview_import_deck(
+    data: ImportDeckRequest,
+    user: User = Depends(get_current_user),
+    session: AsyncSession = Depends(get_async_session),
+):
+    service = DeckService(session)
+
+    try:
+        result = service.preview_import_deck(deck_data=data.deck)
+        return result
+    except NotFoundError as e:
+        raise HTTPException(status_code=404, detail=str(e))
+    except PermissionDeniedError as e:
+        raise HTTPException(status_code=403, detail=str(e))
+
+
+@router.post("/import")
+async def import_deck(
+    data: ImportDeckRequest,
+    user: User = Depends(get_current_user),
+    session: AsyncSession = Depends(get_async_session),
+):
+    service = DeckService(session)
+
+    try:
+        result = await service.import_deck(
+            user_id=user.id,
+            deck_data=data.deck,
+        )
+
+        return result
+
+    except NotFoundError as e:
+        raise HTTPException(status_code=404, detail=str(e))
+    except PermissionDeniedError as e:
+        raise HTTPException(status_code=403, detail=str(e))
+
+@router.post("/generate", response_model=GeneratedDeck)
+async def generate_deck(
+    data: GenerateDeckRequest,
+    user: User = Depends(get_current_user),
+):
+    service = AIService()
+
+    try:
+        result = await service.generate_deck(
+            prompt=data.prompt,
+            card_count=data.card_count,
+        )
+
+        return result
+
+    except NotFoundError as e:
+        raise HTTPException(status_code=404, detail=str(e))
+    except PermissionDeniedError as e:
         raise HTTPException(status_code=403, detail=str(e))

@@ -1,8 +1,58 @@
 {
-    "decks": "Decks",
-    "stats": "{{count}} deck · {{cards}} cards due for review today",
-    "create_deck": "Create Deck",
-    "cards_today": "{{count}} today",
-    "cards_total": "{{count}} cards",
-    "no_cards_due": "no cards due"
+  "decks": "Decks",
+  "stats": "{{count}} deck · {{cards}} cards due for review today",
+  "create_deck": "Create Deck",
+  "cards_today": "{{count}} today",
+  "cards_total": "{{count}} cards",
+  "no_cards_due": "no cards due",
+
+  "deck_dialog": {
+    "title": "Create deck",
+    "description": "Choose a convenient way: empty deck, import, or generation.",
+    "tabs": {
+      "classic": "From scratch",
+      "import": "From file",
+      "generate": "With AI"
+    },
+    "buttons": {
+      "cancel": "Cancel",
+      "create": "Create",
+      "creating": "Creating...",
+      "verify": "Verify",
+      "verifying": "Verifying...",
+      "generate": "Generate",
+      "generating": "Generating...",
+      "back": "Back",
+      "create_deck": "Create deck",
+      "edit": "Edit",
+      "delete": "Delete",
+      "done": "Done"
+    },
+    "classic": {
+      "title_label": "Deck name",
+      "title_placeholder": "For example: English phrasal verbs"
+    },
+    "import": {
+      "file_label": "Deck file",
+      "selected_file": "Selected file:",
+      "invalid_file_error": "Please select a JSON file.",
+      "import_error": "Failed to import the deck. Please check the file."
+    },
+    "generate": {
+      "prompt_label": "What should the deck be about?",
+      "prompt_placeholder": "For example: preparing for a FastAPI Intern interview",
+      "card_count_label": "Number of cards"
+    },
+    "preview": {
+      "title_label": "Deck name",
+      "cards_count": "{{count}} cards",
+      "card": {
+        "front": "Front",
+        "hint": "Hint",
+        "back": "Back",
+        "explanation": "Explanation",
+        "optional_placeholder": "Optional"
+      }
+    }
+  }
 }

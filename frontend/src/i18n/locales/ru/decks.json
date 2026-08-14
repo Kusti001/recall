@@ -1,8 +1,58 @@
 {
-    "decks": "Колоды",
-    "stats": "{{count}} колод · {{cards}} карточек к повторению сегодня",
-    "create_deck": "Создать колоду",
-    "cards_today": "{{count}} сегодня",
-    "cards_total": "{{count}} карточек",
-    "no_cards_due": "нет карточек к повторению"
+  "decks": "Колоды",
+  "stats": "{{count}} колод · {{cards}} карточек к повторению сегодня",
+  "create_deck": "Создать колоду",
+  "cards_today": "{{count}} сегодня",
+  "cards_total": "{{count}} карточек",
+  "no_cards_due": "нет карточек к повторению",
+
+  "deck_dialog": {
+    "title": "Создать колоду",
+    "description": "Выберите удобный способ: пустая колода, импорт или генерация.",
+    "tabs": {
+      "classic": "С нуля",
+      "import": "Из файла",
+      "generate": "С ИИ"
+    },
+    "buttons": {
+      "cancel": "Отмена",
+      "create": "Создать",
+      "creating": "Создание...",
+      "verify": "Проверить",
+      "verifying": "Проверка...",
+      "generate": "Сгенерировать",
+      "generating": "Генерация...",
+      "back": "Назад",
+      "create_deck": "Создать колоду",
+      "edit": "Изменить",
+      "delete": "Удалить",
+      "done": "Готово"
+    },
+    "classic": {
+      "title_label": "Название колоды",
+      "title_placeholder": "Например: Английские фразовые глаголы"
+    },
+    "import": {
+      "file_label": "Файл колоды",
+      "selected_file": "Выбран файл:",
+      "invalid_file_error": "Выберите JSON-файл.",
+      "import_error": "Не удалось импортировать колоду. Проверьте файл."
+    },
+    "generate": {
+      "prompt_label": "О чём должна быть колода?",
+      "prompt_placeholder": "Например: подготовка к собеседованию на FastAPI Intern",
+      "card_count_label": "Количество карточек"
+    },
+    "preview": {
+      "title_label": "Название колоды",
+      "cards_count": "{{count}} карточек",
+      "card": {
+        "front": "Лицевая сторона",
+        "hint": "Подсказка",
+        "back": "Обратная сторона",
+        "explanation": "Пояснение",
+        "optional_placeholder": "Опционально"
+      }
+    }
+  }
 }

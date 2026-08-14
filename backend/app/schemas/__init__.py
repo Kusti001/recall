@@ -1,3 +1,4 @@
+from .ai import GeneratedDeck, GenerateDeckRequest
 from .card import (
     CardCreate,
     CardListItem,
@@ -8,7 +9,7 @@ from .card import (
     ReviewCardsResponse,
 )
 from .deck import DeckCreate, DeckRead, DecksResponse, DeckStats
-from .export import ExportCard, ExportDeckData, ExportDeckResponse
+from .export import ExportCard, ExportDeckData, ExportDeckResponse, ImportDeckRequest
 from .feedback import FeedbackCreate, FeedbackRead
 from .profile import HeatmapDay, ProfileStats
 from .review import CardReviewSchema
@@ -31,7 +32,10 @@ __all__ = [
     "ExportDeckResponse",
     "FeedbackCreate",
     "FeedbackRead",
+    "GenerateDeckRequest",
+    "GeneratedDeck",
     "HeatmapDay",
+    "ImportDeckRequest",
     "ProfileStats",
     "ReviewCardsResponse",
     "UserCreate",

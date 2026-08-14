@@ -5,11 +5,11 @@ import type { DecksResponse } from "@/shared/api/api"
 
 import { DecksHeader } from "@/components/DecksPage/DecksHeader"
 import { DeckGrid } from "@/components/DecksPage/DeckGrid"
-import { CreateDeckDialog } from "@/components/DecksPage/CreateDeckDialog"
+import { DeckDialog } from "@/components/DecksPage/DeckDialog/DeckDialog"
 
 export function DecksPage() {
   const [data, setData] = useState<DecksResponse | null>(null)
-  const [open, setOpen] = useState(false)
+  const [deckDialogOpen, setDeckDialogOpen] = useState(false)
 
   async function loadDecks() {
     const response = await getDecks()
@@ -34,14 +34,14 @@ export function DecksPage() {
       <DecksHeader
         totalDecks={data.total_decks}
         totalDue={data.total_due}
-        onCreate={() => setOpen(true)}
+        onCreate={() => setDeckDialogOpen(true)}
       />
 
-      <DeckGrid decks={data.decks} onCreate={() => setOpen(true)} />
+      <DeckGrid decks={data.decks} onCreate={() => setDeckDialogOpen(true)} />
 
-      <CreateDeckDialog
-        open={open}
-        onOpenChange={setOpen}
+      <DeckDialog
+        open={deckDialogOpen}
+        onOpenChange={setDeckDialogOpen}
         onCreated={loadDecks}
       />
     </main>
