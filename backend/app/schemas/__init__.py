@@ -1,3 +1,4 @@
+from .admin import AdminCardsStats, AdminUserStats, FeedbackCreate, FeedbackRead
 from .ai import GeneratedDeck, GenerateDeckRequest
 from .card import (
     CardCreate,
@@ -10,12 +11,13 @@ from .card import (
 )
 from .deck import DeckCreate, DeckRead, DecksResponse, DeckStats
 from .export import ExportCard, ExportDeckData, ExportDeckResponse, ImportDeckRequest
-from .feedback import FeedbackCreate, FeedbackRead
 from .profile import HeatmapDay, ProfileStats
 from .review import CardReviewSchema
 from .user import UserCreate, UserRead, UserUpdate
 
 __all__ = [
+    "AdminCardsStats",
+    "AdminUserStats",
     "CardCreate",
     "CardListItem",
     "CardRead",

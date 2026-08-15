@@ -15,7 +15,7 @@ import { ProfilePage } from "@/pages/ProfilePage"
 import { DevLogPage } from "./pages/DevLogPage"
 import { FeedbackWidget } from "./components/FeedbackWidget"
 import { ErrorPage } from "./components/ErrorPage"
-import { AdminFeedbackPage } from "./pages/AdminFeedbackPage"
+import { AdminPage } from "./pages/AdminPage"
 
 function Layout() {
   return (
@@ -49,8 +49,8 @@ const router = createBrowserRouter([
         element: <HowThisWorksPage />,
       },
       {
-        path: "/admin/feedback",
-        element: <AdminFeedbackPage />,
+        path: "/admin",
+        element: <AdminPage />,
       },
       {
         path: "/login",

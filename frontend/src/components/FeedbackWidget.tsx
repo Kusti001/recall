@@ -7,7 +7,7 @@ import {
   DialogTitle,
   DialogFooter,
 } from "@/components/ui/dialog"
-import { submitFeedback } from "@/shared/api/feedback"
+import { submitFeedback } from "@/shared/api/admin"
 import { useTranslation } from "react-i18next"
 
 export function FeedbackWidget() {

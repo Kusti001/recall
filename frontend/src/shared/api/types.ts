@@ -122,3 +122,17 @@ export interface ImportDeckRequest {
   version: 1
   deck: ExportDeckData
 }
+
+export interface AdminUserStats {
+  total_users: number
+  active_today: number
+  active_this_week: number
+  new_this_week: number
+}
+
+export interface AdminCardsStats {
+  total_cards: number
+  total_decks: number
+  created_today: number
+  reviews_today: number
+}
