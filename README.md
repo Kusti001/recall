@@ -119,8 +119,8 @@ docker compose -f docker-compose.dev.yml ps
 **Terminal 2 - Backend**
 ```bash
 cd backend
-alembic upgrade head
-uvicorn app.main:app --reload
+python -m alembic upgrade head
+python -m uvicorn app.main:app --reload
 ```
 The backend should now be available at:
 http://localhost:8000
