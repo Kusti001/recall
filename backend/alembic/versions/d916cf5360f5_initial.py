@@ -202,4 +202,5 @@ def downgrade() -> None:
     op.drop_table("deck")
     op.drop_index(op.f("ix_user_email"), table_name="user")
     op.drop_table("user")
+    sa.Enum(name='card_status').drop(op.get_bind(), checkfirst=True)
     # ### end Alembic commands ###

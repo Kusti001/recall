@@ -2,7 +2,10 @@ fastapi-users[sqlalchemy,oauth]
 fastapi
 pydantic-settings
 asyncpg
-
+pytest
+pytest-asyncio
+pytest-dotenv
+pytest-cov
 aiosqlite
 uvicorn[standard]
 gunicorn
